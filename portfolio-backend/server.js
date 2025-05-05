@@ -8,12 +8,6 @@ dotenv.config(); // Load environment variables
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log("Request URL:", req.url);
-  next();
-});
-
-
 // Middleware
 app.use(cors({
   origin: [
@@ -24,10 +18,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-
-
-// Handle preflight requests explicitly if necessary
-app.options('*', cors()); // Preflight for all routes
 
 // Create a transporter for sending email
 const transporter = nodemailer.createTransport({
@@ -43,6 +33,7 @@ const validateEmail = (email) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 };
+
 // Verify email existence using Mailboxlayer API
 async function verifyEmailExists(email) {
   const accessKey = process.env.MAILBOXLAYER_API_KEY;
@@ -53,7 +44,7 @@ async function verifyEmailExists(email) {
     return response.data.smtp_check; // true if email is likely deliverable
   } catch (error) {
     console.error("Verification error:", error.message);
-    return false;
+    return false; // Return false if the API call fails
   }
 }
 
@@ -61,19 +52,30 @@ async function verifyEmailExists(email) {
 app.post("/send-email", async (req, res) => {
   const { name, email, message } = req.body;
 
+  // Check if all required fields are present
   if (!name || !email || !message) {
     return res.status(400).json({ success: false, message: "All fields are required." });
   }
 
+  // Validate email format
   if (!validateEmail(email)) {
     return res.status(400).json({ success: false, message: "Invalid email format." });
   }
 
-  const isRealEmail = await verifyEmailExists(email);
+  // Verify email existence
+  let isRealEmail = false;
+  try {
+    isRealEmail = await verifyEmailExists(email);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error verifying email." });
+  }
+
+  // If email is invalid or unreachable, return an error
   if (!isRealEmail) {
     return res.status(400).json({ success: false, message: "Email does not appear to be valid or reachable." });
   }
 
+  // Prepare the email to send
   const mailOptions = {
     from: process.env.EMAIL_USER, // Your authenticated email
     to: process.env.EMAIL_USER,   // Same email to receive messages
@@ -82,6 +84,7 @@ app.post("/send-email", async (req, res) => {
     text: message,
   };
 
+  // Send the email
   try {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: "Message sent!" });
