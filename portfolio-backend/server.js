@@ -4,20 +4,27 @@ const nodemailer = require('nodemailer');
 const dotenv = require("dotenv");
 const axios = require("axios");
 
-dotenv.config(); // Make sure to load environment variables
+dotenv.config(); // Load environment variables
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://asyncart.vercel.app/",// Replace with your actual deployed Vercel URL
+    "http://localhost:3000" // Allow local development
+  ],
+  methods: ["POST"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Create a transporter for sending email
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Change to your email service provider
+  service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER, // Replace with your email
-    pass: process.env.EMAIL_PASS, // Replace with your email password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -45,40 +52,37 @@ async function verifyEmailExists(email) {
 app.post("/send-email", async (req, res) => {
   const { name, email, message } = req.body;
 
-  // Basic validation
   if (!name || !email || !message) {
     return res.status(400).json({ success: false, message: "All fields are required." });
   }
 
-  // Validate email format
   if (!validateEmail(email)) {
     return res.status(400).json({ success: false, message: "Invalid email format." });
   }
 
-  // Verify actual email deliverability
   const isRealEmail = await verifyEmailExists(email);
   if (!isRealEmail) {
     return res.status(400).json({ success: false, message: "Email does not appear to be valid or reachable." });
   }
 
-  // Setup mail options
   const mailOptions = {
     from: email,
-    to: process.env.EMAIL_USER, // Replace with your email
+    to: process.env.EMAIL_USER,
     subject: `Message from ${name}`,
     text: message,
   };
 
   try {
-    // Send the email
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: "Message sent!" });
   } catch (error) {
+    console.error("Email send error:", error);
     res.status(500).json({ success: false, message: "Error sending email." });
   }
 });
 
-// Server running
-app.listen(5000, () => {
-  console.log("Backend is running on port 5000.");
+// For Render or Vercel compatibility
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Backend is running on port ${PORT}`);
 });
