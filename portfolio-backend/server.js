@@ -11,13 +11,16 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: [
-    "https://asyncart.vercel.app/",// Replace with your actual deployed Vercel URL
+    "https://asyncart.vercel.app", // Corrected the trailing slash issue
     "http://localhost:3000" // Allow local development
   ],
-  methods: ["POST"],
+  methods: ["GET", "POST", "OPTIONS"], // Allow OPTIONS preflight requests as well
   credentials: true
 }));
 app.use(express.json());
+
+// Handle preflight requests explicitly if necessary
+app.options('*', cors()); // Preflight for all routes
 
 // Create a transporter for sending email
 const transporter = nodemailer.createTransport({
@@ -52,42 +55,35 @@ async function verifyEmailExists(email) {
 app.post("/send-email", async (req, res) => {
   const { name, email, message } = req.body;
 
-  console.log("Request body:", req.body);
-
   if (!name || !email || !message) {
-    console.log("Validation failed");
     return res.status(400).json({ success: false, message: "All fields are required." });
   }
 
   if (!validateEmail(email)) {
-    console.log("Invalid email format");
     return res.status(400).json({ success: false, message: "Invalid email format." });
   }
 
   const isRealEmail = await verifyEmailExists(email);
-  console.log("Email check result:", isRealEmail);
   if (!isRealEmail) {
     return res.status(400).json({ success: false, message: "Email does not appear to be valid or reachable." });
   }
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER,
-    replyTo: email,
+    from: process.env.EMAIL_USER, // Your authenticated email
+    to: process.env.EMAIL_USER,   // Same email to receive messages
+    replyTo: email,               // Allows you to "Reply" to the user's email directly
     subject: `Message from ${name}`,
     text: message,
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
     res.status(200).json({ success: true, message: "Message sent!" });
   } catch (error) {
-    console.error("Email sending failed:", error);
+    console.error("Email send error:", error);
     res.status(500).json({ success: false, message: "Error sending email." });
   }
 });
-
 
 // For Render or Vercel compatibility
 const PORT = process.env.PORT || 5000;
