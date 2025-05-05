@@ -34,17 +34,33 @@ const validateEmail = (email) => {
   return regex.test(email);
 };
 
-// Verify email existence using Mailboxlayer API
+// Improved Mailboxlayer email verification
 async function verifyEmailExists(email) {
   const accessKey = process.env.MAILBOXLAYER_API_KEY;
   const url = `http://apilayer.net/api/check?access_key=${accessKey}&email=${email}&smtp=1&format=1`;
 
   try {
     const response = await axios.get(url);
-    return response.data.smtp_check; // true if email is likely deliverable
+    const { smtp_check, format_valid, score, domain } = response.data;
+
+    console.log(`Mailboxlayer response for ${email}:`, response.data);
+
+    // Accept if:
+    // - SMTP check passes
+    // - OR domain is known to block SMTP (like Gmail)
+    // - OR score is high and format is valid
+    if (
+      smtp_check ||
+      domain === "gmail.com" ||
+      (format_valid && score > 0.65)
+    ) {
+      return true;
+    }
+
+    return false;
   } catch (error) {
     console.error("Verification error:", error.message);
-    return false; // Return false if the API call fails
+    return true; // Don't block user just because verification failed
   }
 }
 
