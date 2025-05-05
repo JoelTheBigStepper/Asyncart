@@ -36,7 +36,6 @@ const validateEmail = (email) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 };
-
 // Verify email existence using Mailboxlayer API
 async function verifyEmailExists(email) {
   const accessKey = process.env.MAILBOXLAYER_API_KEY;
