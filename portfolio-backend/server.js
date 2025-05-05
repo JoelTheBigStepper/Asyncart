@@ -66,12 +66,13 @@ app.post("/send-email", async (req, res) => {
   }
 
   const mailOptions = {
-    from: email,
-    to: process.env.EMAIL_USER,
+    from: process.env.EMAIL_USER, // Your authenticated email
+    to: process.env.EMAIL_USER,   // Same email to receive messages
+    replyTo: email,               // Allows you to "Reply" to the user's email directly
     subject: `Message from ${name}`,
     text: message,
   };
-
+  
   try {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: "Message sent!" });
