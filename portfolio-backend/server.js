@@ -8,6 +8,12 @@ dotenv.config(); // Load environment variables
 
 const app = express();
 
+app.use((req, res, next) => {
+  console.log("Request URL:", req.url);
+  next();
+});
+
+
 // Middleware
 app.use(cors({
   origin: [
