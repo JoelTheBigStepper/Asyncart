@@ -4,11 +4,12 @@ const projectSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    image: { type: String }, // Cloudinary URL
+    image: { type: String },
     code: { type: String },
     demo: { type: String },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Project", projectSchema);
+const Project = mongoose.model("Project", projectSchema);
+export default Project;
