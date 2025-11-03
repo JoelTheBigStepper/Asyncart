@@ -1,25 +1,49 @@
-const express = require('express');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-const dotenv = require("dotenv");
-const axios = require("axios");
+// ============================
+// 📦 IMPORTS & CONFIG
+// ============================
+import express from "express";
+import cors from "cors";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import axios from "axios";
+import mongoose from "mongoose";
+import projectRoutes from "./routes/projectRoutes.js";
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: [
-    "https://asyncart.vercel.app", // Corrected the trailing slash issue
-    "http://localhost:3000" // Allow local development
-  ],
-  methods: ["GET", "POST", "OPTIONS"], // Allow OPTIONS preflight requests as well
-  credentials: true
-}));
+// ============================
+// 🌍 MIDDLEWARE
+// ============================
+app.use(
+  cors({
+    origin: [
+      "https://asyncart.vercel.app", // Production
+      "http://localhost:3000",       // Local dev
+    ],
+    methods: ["GET", "POST", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-// Create a transporter for sending email
+// ============================
+// ⚡ CONNECT TO MONGODB
+// ============================
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// ============================
+// ☁️ ROUTES
+// ============================
+
+// --- Projects API (MongoDB + Cloudinary)
+app.use("/api/projects", projectRoutes);
+
+// --- Email Contact Route ---
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -28,13 +52,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Validate email format
-const validateEmail = (email) => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-};
+// Simple email validation
+const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-// Improved Mailboxlayer email verification
+// Mailboxlayer verification
 async function verifyEmailExists(email) {
   const accessKey = process.env.MAILBOXLAYER_API_KEY;
   const url = `http://apilayer.net/api/check?access_key=${accessKey}&email=${email}&smtp=1&format=1`;
@@ -45,10 +66,6 @@ async function verifyEmailExists(email) {
 
     console.log(`Mailboxlayer response for ${email}:`, response.data);
 
-    // Accept if:
-    // - SMTP check passes
-    // - OR domain is known to block SMTP (like Gmail)
-    // - OR score is high and format is valid
     if (
       smtp_check ||
       domain === "gmail.com" ||
@@ -60,25 +77,22 @@ async function verifyEmailExists(email) {
     return false;
   } catch (error) {
     console.error("Verification error:", error.message);
-    return true; // Don't block user just because verification failed
+    return true; // Allow email if verification fails
   }
 }
 
-// Endpoint to handle email sending
+// ============================
+// ✉️ EMAIL ENDPOINT
+// ============================
 app.post("/send-email", async (req, res) => {
   const { name, email, message } = req.body;
 
-  // Check if all required fields are present
-  if (!name || !email || !message) {
+  if (!name || !email || !message)
     return res.status(400).json({ success: false, message: "All fields are required." });
-  }
 
-  // Validate email format
-  if (!validateEmail(email)) {
+  if (!validateEmail(email))
     return res.status(400).json({ success: false, message: "Invalid email format." });
-  }
 
-  // Verify email existence
   let isRealEmail = false;
   try {
     isRealEmail = await verifyEmailExists(email);
@@ -86,21 +100,17 @@ app.post("/send-email", async (req, res) => {
     return res.status(500).json({ success: false, message: "Error verifying email." });
   }
 
-  // If email is invalid or unreachable, return an error
-  if (!isRealEmail) {
-    return res.status(400).json({ success: false, message: "Email does not appear to be valid or reachable." });
-  }
+  if (!isRealEmail)
+    return res.status(400).json({ success: false, message: "Email does not appear valid or reachable." });
 
-  // Prepare the email to send
   const mailOptions = {
-    from: process.env.EMAIL_USER, // Your authenticated email
-    to: process.env.EMAIL_USER,   // Same email to receive messages
-    replyTo: email,               // Allows you to "Reply" to the user's email directly
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_USER,
+    replyTo: email,
     subject: `Message from ${name}`,
     text: message,
   };
 
-  // Send the email
   try {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: "Message sent!" });
@@ -110,8 +120,8 @@ app.post("/send-email", async (req, res) => {
   }
 });
 
-// For Render or Vercel compatibility
+// ============================
+// ✅ SERVER
+// ============================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Backend is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
