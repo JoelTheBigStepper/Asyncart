@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Helmet } from 'react-helmet';
 import Header from "./components/Header";
-import Home from "./components/Home";
-import About from "./components/About";
-import Works from "./components/Works";
-import Contact from "./components/Contact";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Works from "./pages/Works";
+import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 export default function App() {
