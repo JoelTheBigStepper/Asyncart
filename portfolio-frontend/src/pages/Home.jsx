@@ -6,7 +6,7 @@ export default function Home() {
     <>
       <motion.section
         id="hero"
-        className="container mx-auto px-6 py-24 flex flex-col md:flex-row items-center justify-between gap-16 text-left bg-gray-50 dark:bg-stone-900 transition-colors duration-300"
+        className="min-h-screen bg-black text-white px-6 py-24 flex flex-col md:flex-row items-center justify-between gap-16 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -14,59 +14,62 @@ export default function Home() {
         {/* Left Side - Text */}
         <div className="flex-1 space-y-6">
           <motion.h2
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-stone-900 dark:text-white leading-tight"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight font-outfit"
             whileHover={{ scale: 1.03 }}
-            transition={{ type: "spring", stiffness: 200 }}
+            transition={{ type: 'spring', stiffness: 200 }}
           >
-            Hi, I'm <span className="text-amber-600 dark:text-amber-400">Joel</span> <br />
-            A Front-End Developer
+            Hi, I’m <span className="text-amber-500">Joel</span>
+            <br /> A Full-Stack Developer
           </motion.h2>
 
-          <p className="text-lg text-stone-700 dark:text-gray-400 leading-relaxed max-w-xl">
-            I craft beautiful, interactive, and responsive web experiences using
-            <span className="font-semibold text-amber-600 dark:text-amber-400">
-              {" "}
-              React, TailwindCSS,{" "}
-            </span>
-            and modern tools. Let’s bring your ideas to life with code that feels as good as it looks.
+          <p className="text-lg text-gray-400 leading-relaxed max-w-xl font-outfit">
+            I build modern, scalable, and responsive web applications using
+            <span className="text-amber-500 font-semibold"> React, Node.js, Express, </span>
+            and <span className="text-amber-500 font-semibold">MongoDB</span>.
+            From frontend experiences to backend logic and integrations like
+            <span className="text-amber-500 font-semibold"> Nodemailer</span> and
+            <span className="text-amber-500 font-semibold"> Mailboxlayer</span>,
+            I bring ideas to life through clean, performant code.
           </p>
 
           <motion.a
             href="#contact"
-            className="inline-block bg-amber-600 text-white px-7 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg hover:bg-amber-700 transition-all duration-300 dark:bg-amber-500 dark:hover:bg-amber-400"
+            className="inline-block bg-amber-600 text-white px-7 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg hover:bg-amber-700 transition-all duration-300"
             whileHover={{ scale: 1.07 }}
             whileTap={{ scale: 0.97 }}
           >
-            Let’s Talk
+            Get in Touch
           </motion.a>
         </div>
 
-        {/* Right Side - Image */}
+        {/* Right Side - Image + Glow */}
         <motion.div
-          className="flex-1 flex justify-center"
+          className="flex-1 flex justify-center relative"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <div className="relative">
-            <motion.img
-              src={myImage}
-              loading="lazy"
-              alt="Joel illustration"
-              className="rounded-2xl w-full max-w-sm sm:max-w-md md:max-w-lg shadow-lg ring-1 ring-stone-200 dark:ring-stone-800"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 200 }}
-            />
+          {/* Animated Glow Background */}
+          <motion.div
+            className="absolute -inset-10 bg-gradient-to-tr from-amber-500/30 via-transparent to-transparent rounded-full blur-3xl"
+            animate={{ scale: [1, 1.05, 1], opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
 
-            {/* Gold glow accent behind image */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-amber-500/10 to-transparent blur-2xl -z-10" />
-          </div>
+          <motion.img
+            src={myImage}
+            loading="lazy"
+            alt="Joel portrait"
+            className="rounded-2xl w-full max-w-sm sm:max-w-md md:max-w-lg shadow-2xl ring-1 ring-stone-800 relative z-10"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 200 }}
+          />
         </motion.div>
       </motion.section>
 
       {/* Divider */}
       <motion.hr
-        className="my-16 border-t border-stone-300 dark:border-stone-800 w-[90%] mx-auto"
+        className="my-16 border-t border-stone-700 w-[90%] mx-auto"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 1.8 }}
