@@ -1,4 +1,3 @@
-// src/sections/About.jsx
 import { motion } from "framer-motion";
 
 const skills = [
@@ -14,7 +13,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative z-10 min-h-screen flex flex-col justify-center items-center px-6 py-24 bg-[#0d0d0d] text-white"
+      className="relative z-10 min-h-screen flex flex-col justify-center items-center px-6 py-24 bg-white text-stone-800 dark:bg-[#0d0d0d] dark:text-white transition-colors duration-500"
     >
       {/* Heading */}
       <motion.div
@@ -22,32 +21,34 @@ export default function About() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="text-center max-w-3xl mx-auto mb-12"
+        className="text-center max-w-3xl mb-16"
       >
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-white via-stone-300 to-stone-500 bg-clip-text text-transparent">
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-stone-800 via-stone-500 to-stone-400 dark:from-white dark:via-stone-300 dark:to-stone-500 bg-clip-text text-transparent">
           About Me
         </h2>
-        <p className="text-stone-400 text-lg leading-relaxed">
+        <p className="text-stone-600 dark:text-stone-400 text-lg leading-relaxed">
           A creative front-end developer passionate about clean code, refined
-          visuals, and user-first design.
+          visuals, and user-first design. I build interactive, responsive, and
+          visually polished experiences with modern web technologies.
         </p>
       </motion.div>
 
-      {/* Upwork-style Bio */}
+      {/* Bio Section */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="max-w-3xl text-center mb-12"
+        className="max-w-4xl text-center mb-20"
       >
-        <p className="text-stone-300 text-base md:text-lg leading-relaxed">
+        <p className="text-stone-700 dark:text-stone-300 text-base md:text-lg leading-relaxed">
           I’m a dedicated Web Developer who loves crafting pixel-perfect,
           user-friendly interfaces with React, TailwindCSS, and modern
           JavaScript. On Upwork, I specialize in helping brands refine their
-          visual presence — improving layout balance, spacing, and design
-          consistency. I deliver polished portfolios, responsive landing pages,
-          and elegant UI components that convert visitors into customers.
+          visual presence — improving layout balance, visual spacing, and
+          overall design consistency. Whether it’s optimizing a portfolio,
+          modernizing a brand site, or creating elegant product pages, I aim to
+          deliver design that feels intuitive, balanced, and beautiful.
         </p>
       </motion.div>
 
@@ -55,94 +56,33 @@ export default function About() {
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8, staggerChildren: 0.08 }}
+        transition={{ duration: 0.8, staggerChildren: 0.1 }}
         viewport={{ once: true }}
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-6 max-w-4xl w-full"
       >
         {skills.map((skill, idx) => (
           <motion.div
             key={idx}
-            whileHover={{ y: -6, scale: 1.03 }}
-            transition={{ duration: 0.25 }}
-            className="relative p-5 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg overflow-hidden"
+            whileHover={{ y: -5, scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+            className="p-5 rounded-xl shadow-lg transition-all duration-300 border border-stone-200 dark:border-white/10 bg-white hover:bg-stone-50 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-md"
           >
-            {/* moving light overlay */}
-            <motion.div
-              aria-hidden
-              initial={{ x: "-140%" }}
-              animate={{ x: "140%" }}
-              transition={{
-                duration: 2.0 + (idx % 3) * 0.2,
-                ease: "easeInOut",
-                repeat: Infinity,
-              }}
-              style={{
-                position: "absolute",
-                top: "-30%",
-                left: 0,
-                width: "45%",
-                height: "200%",
-                transform: "skewX(-20deg)",
-                background:
-                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 100%)",
-                pointerEvents: "none",
-                filter: "blur(6px)",
-              }}
-            />
-
-            <h3 className="text-xl font-semibold text-white mb-1">
+            <h3 className="text-xl font-semibold text-stone-800 dark:text-white mb-1">
               {skill.name}
             </h3>
-            <p className="text-stone-400 text-sm">Level: {skill.level}</p>
+            <p className="text-stone-500 dark:text-stone-400 text-sm">
+              Level: {skill.level}
+            </p>
           </motion.div>
         ))}
       </motion.div>
 
-      {/* CTA or profile link with sheen */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="mt-12"
-      >
-        <a
-          href="https://www.upwork.com/freelancers/~yourprofile"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative inline-block overflow-hidden text-sm font-medium px-6 py-3 rounded-lg bg-white text-black"
-        >
-          <motion.span
-            aria-hidden
-            initial={{ x: "-120%" }}
-            animate={{ x: "120%" }}
-            transition={{
-              duration: 1.6,
-              ease: "easeInOut",
-              repeat: Infinity,
-            }}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height: "100%",
-              width: "40%",
-              transform: "skewX(-18deg)",
-              background:
-                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 100%)",
-              pointerEvents: "none",
-              mixBlendMode: "screen",
-            }}
-          />
-          View my Upwork profile
-        </a>
-      </motion.div>
-
+      {/* Divider Animation */}
       <motion.hr
-        className="mt-20 border-t border-stone-800 w-[90%] mx-auto"
+        className="mt-20 border-t border-stone-300 dark:border-stone-800 w-[90%] mx-auto"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
+        transition={{ duration: 1.5, ease: 'easeInOut' }}
         style={{ originX: 0 }}
         viewport={{ once: true }}
       />
