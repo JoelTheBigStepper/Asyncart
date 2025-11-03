@@ -1,58 +1,124 @@
-import { motion } from 'framer-motion';
+// src/sections/Works.jsx
+import { motion } from "framer-motion";
 
 const projects = [
-  { title: "Portfolio Website", description: "A personal portfolio to showcase my work and skills." },
-  { title: "E-commerce UI", description: "Responsive UI for an online store built with React and Tailwind." },
-  { title: "Blog Platform", description: "A clean and modern blog interface using modern web tech." },
+  {
+    title: "Portfolio Website",
+    description:
+      "A personal portfolio to showcase my work, built with React, TailwindCSS, and Framer Motion.",
+    code: "https://github.com/yourusername/asyncart",
+    live: "https://asyncart.vercel.app/",
+    image: "/images/portfolio-preview.jpg", // 🖼️ Replace with your actual image
+  },
+  {
+    title: "E-commerce UI",
+    description:
+      "A sleek, responsive e-commerce interface with product filters, cart logic, and modern transitions.",
+    code: "https://github.com/yourusername/ecommerce-ui",
+    live: "https://ecommerce-ui-demo.vercel.app/",
+    image: "/images/ecommerce-preview.jpg",
+  },
+  {
+    title: "Blog Platform",
+    description:
+      "A minimalist blog system with markdown support and smooth navigation, designed for content creators.",
+    code: "https://github.com/yourusername/blog-platform",
+    live: "https://blog-platform-demo.vercel.app/",
+    image: "/images/blog-preview.jpg",
+  },
 ];
 
 export default function Works() {
   return (
-    <>
-      <section id="work" className="p-10 text-left">
-        <h2 className="text-3xl font-bold mb-3">My Projects</h2>
-        <p className="mb-8 text-stone-600 dark:text-gray-400"> Below are some of the projects I have worked on using modern web technologies such as React, Tailwind CSS, and more.</p>
+    <section
+      id="work"
+      className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-[#0d0d0d] text-white"
+    >
+      {/* Section Heading */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="text-center max-w-3xl mx-auto mb-16"
+      >
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-white via-stone-300 to-stone-500 bg-clip-text text-transparent">
+          Featured Projects
+        </h2>
+        <p className="text-stone-400 text-lg leading-relaxed">
+          A curated selection of my favorite builds — blending functionality,
+          motion, and minimal design.
+        </p>
+      </motion.div>
 
-        {/* Grid layout for projects */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {projects.map((project, idx) => (
-            <motion.div
-              key={idx}
-              className="bg-stone-800 dark:bg-stone-800 p-6 rounded-lg shadow hover:scale-105 transition-transform"
-              whileHover={{ scale: 1.05 }}
-            >
-              <h3 className="text-xl text-white dark:text-white font-semibold mb-2">{project.title}</h3>
-              <p className="text-stone-300 dark:text-white mb-4">{project.description}</p>
-              <div className="flex flex-wrap justify-between gap-2">
+      {/* Projects Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full">
+        {projects.map((project, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -10, scale: 1.02 }}
+            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            viewport={{ once: true }}
+            className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl shadow-lg hover:shadow-stone-900/40 transition-all duration-300 overflow-hidden"
+          >
+            {/* Project Image */}
+            <div className="relative w-full h-48 overflow-hidden rounded-t-2xl">
+              <motion.img
+                src={project.image}
+                alt={project.title}
+                className="object-cover w-full h-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.6 }}
+              />
+              {/* Overlay gradient for better text contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent pointer-events-none" />
+            </div>
+
+            {/* Project Details */}
+            <div className="p-6 flex flex-col justify-between h-[calc(100%-12rem)]">
+              <div>
+                <h3 className="text-2xl font-semibold mb-3 tracking-tight">
+                  {project.title}
+                </h3>
+                <p className="text-stone-400 leading-relaxed mb-6">
+                  {project.description}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between mt-auto gap-3">
                 <a
-                  href="#"
+                  href={project.code}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm dark:bg-transparent text-white dark:text-white px-4 py-2 rounded border border-1 dark:border dark:border-stone-700 transition"
+                  className="text-sm font-medium px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 transition-all duration-200"
                 >
                   Code
                 </a>
                 <a
-                  href="#"
+                  href={project.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm bg-black text-white px-4 py-2 rounded dark:bg-black transition"
+                  className="text-sm font-medium px-4 py-2 rounded-lg bg-white text-black hover:bg-stone-200 transition-all duration-200"
                 >
                   Visit Site
                 </a>
               </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
+      {/* Divider Animation */}
       <motion.hr
-        className="my-12 border-t-1 border-stone-300 dark:border-stone-800 w-[90%] mx-auto"
+        className="mt-20 border-t border-stone-800 w-[90%] mx-auto"
         initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 4 }}
-        style={{ originX: 0.5 }}
+        whileInView={{ scaleX: 1 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        style={{ originX: 0 }}
+        viewport={{ once: true }}
       />
-    </>
+    </section>
   );
 }
