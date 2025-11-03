@@ -14,7 +14,7 @@ export default function Works() {
   const fetchProjects = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch("https://your-backend-url.onrender.com/api/projects"); 
+      const res = await fetch("https://asyncart.onrender.com/api/projects"); 
       const data = await res.json();
 
       if (data.success && data.projects?.length > 0) {
