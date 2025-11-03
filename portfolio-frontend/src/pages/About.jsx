@@ -1,61 +1,99 @@
 import { motion } from "framer-motion";
-import myImage from "../assets/yh.png";
+import {
+  SiHtml5,
+  SiCss3,
+  SiJavascript,
+  SiReact,
+  SiTailwindcss,
+  SiGit,
+  SiNodedotjs,
+  SiMongodb,
+  SiExpress,
+} from "react-icons/si";
+
+const skills = [
+  { name: "HTML", icon: SiHtml5 },
+  { name: "CSS", icon: SiCss3 },
+  { name: "JavaScript", icon: SiJavascript },
+  { name: "React", icon: SiReact },
+  { name: "Tailwind CSS", icon: SiTailwindcss },
+  { name: "Git", icon: SiGit },
+  { name: "Node.js", icon: SiNodedotjs },
+  { name: "MongoDB", icon: SiMongodb },
+  { name: "Express", icon: SiExpress },
+];
 
 export default function About() {
   return (
-    <motion.section
-      id="about"
-      className="container mx-auto px-4 py-20 flex flex-col md:flex-row items-center justify-between gap-12"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1 }}
-      viewport={{ once: true }}
-    >
-      {/* Left - Image */}
-      <motion.div
-        className="flex-1 flex justify-center"
-        initial={{ x: -80, opacity: 0 }}
-        whileInView={{ x: 0, opacity: 1 }}
-        transition={{ duration: 1 }}
+    <>
+      <section
+        id="about"
+        className="px-6 py-20 flex flex-col md:flex-row items-start justify-between gap-16 bg-black text-white transition-colors duration-300"
       >
-        <img
-          src={myImage}
-          alt="Joel"
-          className="rounded-2xl shadow-lg w-72 sm:w-80 md:w-96 object-cover border-4 border-stone-200 dark:border-stone-800"
-        />
-      </motion.div>
+        {/* Left: Bio */}
+        <motion.div
+          className="flex-1 space-y-6"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl md:text-4xl font-bold font-outfit">
+            About Me
+          </h2>
 
-      {/* Right - Text */}
-      <motion.div
-        className="flex-1 text-left"
-        initial={{ x: 80, opacity: 0 }}
-        whileInView={{ x: 0, opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-stone-800 dark:text-stone-200">
-          About Me
-        </h2>
-        <p className="text-lg text-stone-600 dark:text-gray-400 mb-6 leading-relaxed">
-          I’m Joel, a passionate Front-End Developer who enjoys transforming
-          ideas into interactive and visually appealing web experiences. With a
-          focus on clean design, performance, and usability, I build responsive
-          interfaces that bring brands to life.
-        </p>
+          <p className="text-lg text-stone-300 leading-relaxed max-w-xl font-outfit">
+            I’m Joel — a <span className="text-amber-400 font-semibold">Full-Stack Developer</span> who builds modern, scalable, and responsive web applications.  
+            My typical stack includes <span className="text-amber-400 font-semibold">React</span>, <span className="text-amber-400 font-semibold">Node.js</span>, <span className="text-amber-400 font-semibold">Express</span>, and <span className="text-amber-400 font-semibold">MongoDB</span>.  
+            I also integrate email/verification flows using <span className="text-amber-400 font-semibold">Nodemailer</span> and <span className="text-amber-400 font-semibold">Mailboxlayer</span>.
+          </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-          {["React", "TailwindCSS", "JavaScript", "Node.js", "Framer Motion", "UI/UX"].map(
-            (skill) => (
-              <motion.span
-                key={skill}
-                whileHover={{ scale: 1.1 }}
-                className="px-4 py-2 rounded-lg border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 text-center"
+          <div className="border-l-4 border-amber-500 pl-4">
+            <p className="text-stone-300 italic max-w-lg">
+              “I focus on improving layout balance, spacing, and visual consistency for brand and portfolio sites — delivering refined, accessible, and performance-minded interfaces.”
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Right: Skills (icons) */}
+        <motion.div
+          className="flex-1 grid grid-cols-3 sm:grid-cols-3 gap-6 max-w-lg"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          {skills.map((skill, idx) => {
+            const Icon = skill.icon;
+            return (
+              <motion.div
+                key={skill.name}
+                whileHover={{ y: -6, scale: 1.03 }}
+                transition={{ duration: 0.25 }}
+                className="relative p-5 rounded-xl border border-stone-800 bg-white/5 backdrop-blur-md"
               >
-                {skill}
-              </motion.span>
-            )
-          )}
-        </div>
-      </motion.div>
-    </motion.section>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-white/6 dark:bg-white/6">
+                    <Icon className="w-7 h-7 text-amber-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-outfit font-semibold">{skill.name}</h4>
+                    <p className="text-sm text-stone-300">Experienced</p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </section>
+
+      <motion.hr
+        className="my-12 border-t w-[90%] mx-auto border-stone-700"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        transition={{ duration: 1.2 }}
+        style={{ originX: 0.5 }}
+      />
+    </>
   );
 }

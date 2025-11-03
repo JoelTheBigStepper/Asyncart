@@ -6,7 +6,9 @@ export default function Home() {
     <>
       <motion.section
         id="hero"
-        className="min-h-screen bg-black text-white px-6 py-24 flex flex-col md:flex-row items-center justify-between gap-16 overflow-hidden"
+        className="min-h-screen px-6 py-24 flex flex-col md:flex-row items-center justify-between gap-16 overflow-hidden
+                   bg-black text-white dark:bg-black dark:text-white
+                   bg-white text-stone-900 light-mode-transition"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -18,23 +20,23 @@ export default function Home() {
             whileHover={{ scale: 1.03 }}
             transition={{ type: 'spring', stiffness: 200 }}
           >
-            Hi, I’m <span className="text-amber-500">Joel</span>
+            Hi, I’m <span className="text-amber-500 dark:text-amber-500">Joel</span>
             <br /> A Full-Stack Developer
           </motion.h2>
 
-          <p className="text-lg text-gray-400 leading-relaxed max-w-xl font-outfit">
-            I build modern, scalable, and responsive web applications using
-            <span className="text-amber-500 font-semibold"> React, Node.js, Express, </span>
-            and <span className="text-amber-500 font-semibold">MongoDB</span>.
-            From frontend experiences to backend logic and integrations like
-            <span className="text-amber-500 font-semibold"> Nodemailer</span> and
-            <span className="text-amber-500 font-semibold"> Mailboxlayer</span>,
-            I bring ideas to life through clean, performant code.
+          <p className="text-lg leading-relaxed max-w-xl font-outfit text-stone-600 dark:text-gray-300">
+            I build modern, scalable, and responsive web applications using{" "}
+            <span className="text-amber-600 font-semibold">React</span>,{" "}
+            <span className="text-amber-600 font-semibold">Node.js</span>, and{" "}
+            <span className="text-amber-600 font-semibold">Express</span>. I integrate email and verification flows using{" "}
+            <span className="text-amber-600 font-semibold">Nodemailer</span> and{" "}
+            <span className="text-amber-600 font-semibold">Mailboxlayer</span>, and persist data with{" "}
+            <span className="text-amber-600 font-semibold">MongoDB</span>.
           </p>
 
           <motion.a
             href="#contact"
-            className="inline-block bg-amber-600 text-white px-7 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg hover:bg-amber-700 transition-all duration-300"
+            className="inline-block bg-amber-600 text-white px-7 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300"
             whileHover={{ scale: 1.07 }}
             whileTap={{ scale: 0.97 }}
           >
@@ -49,10 +51,13 @@ export default function Home() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          {/* Animated Glow Background */}
+          {/* Ambient Glow — adapts to light/dark via utility classes */}
           <motion.div
-            className="absolute -inset-10 bg-gradient-to-tr from-amber-500/30 via-transparent to-transparent rounded-full blur-3xl"
-            animate={{ scale: [1, 1.05, 1], opacity: [0.6, 1, 0.6] }}
+            className="absolute -inset-10 rounded-full blur-3xl -z-10
+                       bg-gradient-to-tr from-amber-400/20 to-transparent
+                       dark:from-amber-500/30 dark:to-transparent
+                       light:from-amber-200/15 light:to-transparent"
+            animate={{ scale: [1, 1.04, 1], opacity: [0.6, 1, 0.6] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
 
@@ -60,19 +65,20 @@ export default function Home() {
             src={myImage}
             loading="lazy"
             alt="Joel portrait"
-            className="rounded-2xl w-full max-w-sm sm:max-w-md md:max-w-lg shadow-2xl ring-1 ring-stone-800 relative z-10"
+            className="rounded-2xl w-full max-w-sm sm:max-w-md md:max-w-lg shadow-2xl ring-1 ring-stone-200 dark:ring-stone-800 relative z-10"
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 200 }}
           />
         </motion.div>
       </motion.section>
 
-      {/* Divider */}
+      {/* Divider (adapts to mode) */}
       <motion.hr
-        className="my-16 border-t border-stone-700 w-[90%] mx-auto"
+        className="my-16 border-t w-[90%] mx-auto
+                   border-stone-300 dark:border-stone-700"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
-        transition={{ duration: 1.8 }}
+        transition={{ duration: 1.2 }}
         style={{ originX: 0.5 }}
       />
     </>
