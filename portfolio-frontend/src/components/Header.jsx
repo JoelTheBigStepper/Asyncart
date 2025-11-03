@@ -6,89 +6,110 @@ export default function Header({ theme, toggleTheme }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
+    return () => (document.body.style.overflow = "auto");
   }, [isOpen]);
 
-  const handleLinkClick = () => {
-    setIsOpen(false);
-  };
+  const handleLinkClick = () => setIsOpen(false);
 
   return (
     <>
       {/* HEADER */}
-      <header className="shadow-md sticky top-0 z-30 bg-white dark:bg-black">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          {/* Site Name */}
-          <h1 className="text-2xl sm:text-3xl font-bold text-black dark:text-white">AsyncArt</h1>
-           {/* Desktop Nav */}
-          <nav className="hidden md:flex space-x-4">
-            <a href="#home" className="text-black dark:text-white hover:text-blue-400">Home</a>
-            <a href="#about" className="text-black dark:text-white hover:text-blue-400">About</a>
-            <a href="#work" className="text-black dark:text-white hover:text-blue-400">Work</a>
-            <a href="#contact" className="text-black dark:text-white hover:text-blue-400">Contact</a>
+      <motion.header
+        className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-lg border-b border-stone-200 dark:border-stone-800 shadow-sm transition-colors duration-300"
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+          {/* Brand */}
+          <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-white tracking-tight">
+            Async<span className="text-amber-500">Art</span>
+          </h1>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center space-x-6 font-medium">
+            {[
+              { href: "#home", label: "Home" },
+              { href: "#about", label: "About" },
+              { href: "#work", label: "Work" },
+              { href: "#contact", label: "Contact" },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-stone-700 dark:text-gray-300 hover:text-amber-500 transition-colors duration-200"
+              >
+                {link.label}
+              </a>
+            ))}
           </nav>
-          {/* Theme Toggle + Hamburger */}
+
+          {/* Theme + Menu */}
           <div className="flex items-center space-x-4">
-            <button onClick={toggleTheme} className="text-black dark:text-white">
-              {theme === "dark" ? <Moon className="w-6 h-6" /> : <Sun className="w-6 h-6" />}
+            <button
+              onClick={toggleTheme}
+              className="text-stone-800 dark:text-white hover:text-amber-500 transition-colors"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-6 h-6" />
+              ) : (
+                <Moon className="w-6 h-6" />
+              )}
             </button>
 
-            <button onClick={() => setIsOpen(true)} className="text-black dark:text-white">
-              <Menu className="w-7 h-7 lg:hidden" />
+            <button
+              onClick={() => setIsOpen(true)}
+              className="md:hidden text-stone-800 dark:text-white hover:text-amber-500 transition-colors"
+            >
+              <Menu className="w-7 h-7" />
             </button>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      {/* MOBILE MENU with animation */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-50 flex justify-center items-start pt-20 bg-black/60 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex justify-center items-start pt-24 bg-black/80 backdrop-blur-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative bg-white dark:bg-black text-black dark:text-white rounded-lg p-8 w-[90%] space-y-8"
-              initial={{ y: -50, opacity: 0 }}
+              className="relative bg-white dark:bg-stone-900 text-stone-900 dark:text-white rounded-2xl p-10 w-[85%] max-w-md shadow-xl border border-stone-200 dark:border-stone-800"
+              initial={{ y: -60, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -50, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              exit={{ y: -60, opacity: 0 }}
+              transition={{ duration: 0.4 }}
             >
               {/* Close Button */}
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-4 text-black dark:text-white"
+                className="absolute top-5 right-5 text-stone-700 dark:text-gray-300 hover:text-amber-500"
               >
                 <X className="w-6 h-6" />
               </button>
 
-              {/* Links */}
-              <div className="flex flex-col items-start space-y-6">
-                <a href="#home" onClick={handleLinkClick} className="flex items-center space-x-2 hover:text-blue-400">
-                  <Home className="w-5 h-5" />
-                  <span>Home</span>
-                </a>
-                <a href="#about" onClick={handleLinkClick} className="flex items-center space-x-2 hover:text-blue-400">
-                  <User className="w-5 h-5" />
-                  <span>About</span>
-                </a>
-                <a href="#work" onClick={handleLinkClick} className="flex items-center space-x-2 hover:text-blue-400">
-                  <Briefcase className="w-5 h-5" />
-                  <span>Work</span>
-                </a>
-                <a href="#contact" onClick={handleLinkClick} className="flex items-center space-x-2 hover:text-blue-400">
-                  <Mail className="w-5 h-5" />
-                  <span>Contact</span>
-                </a>
+              {/* Nav Links */}
+              <div className="flex flex-col items-start space-y-8 mt-6 text-lg font-medium">
+                {[
+                  { href: "#home", label: "Home", icon: <Home /> },
+                  { href: "#about", label: "About", icon: <User /> },
+                  { href: "#work", label: "Work", icon: <Briefcase /> },
+                  { href: "#contact", label: "Contact", icon: <Mail /> },
+                ].map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={handleLinkClick}
+                    className="flex items-center gap-3 hover:text-amber-500 transition-colors"
+                  >
+                    <span className="text-amber-500">{link.icon}</span>
+                    {link.label}
+                  </a>
+                ))}
               </div>
             </motion.div>
           </motion.div>
