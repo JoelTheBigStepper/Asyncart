@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from 'react-helmet';
 import Header from "./components/Header";
 import Home from "./pages/Home";
@@ -7,19 +8,10 @@ import Works from "./pages/Works";
 import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import ScrollToTopButton from "./components/ScrollToTopButton";
-export default function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+import Admin from './pages/Admin';
 
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-  
-
+// Main Portfolio Page
+function PortfolioPage({ theme, toggleTheme }) {
   return (
     <>
       <Helmet>
@@ -35,18 +27,49 @@ export default function App() {
         <meta name="twitter:description" content="Showcasing the work of a Front-End Developer." />
         <meta name="twitter:image" content="URL_to_your_image.jpg" />
       </Helmet>
-      <div className={`h-auto bg-white text-gray-900 dark:bg-black dark:text-white font-sans transition-colors duration-500`}>
-      <Header theme={theme} toggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")} />
-
-      <section id="home"><Home /></section>
-      <section id="about"><About /></section>
-      <section id="works"><Works /></section>
-      <section id="contact"><Contact /></section>
-      <section id="scrollToTopButton"><ScrollToTopButton /></section>
-      <section id="footer"><Footer /></section>
       
-      
+      <div className="h-auto bg-white text-gray-900 dark:bg-black dark:text-white font-sans transition-colors duration-500">
+        <Header theme={theme} toggleTheme={toggleTheme} />
+        
+        <section id="home"><Home /></section>
+        <section id="about"><About /></section>
+        <section id="works"><Works /></section>
+        <section id="contact"><Contact /></section>
+        
+        <ScrollToTopButton />
+        <Footer />
       </div>
     </>
+  );
+}
+
+export default function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  return (
+    <Router>
+      <Routes>
+        {/* Main Portfolio */}
+        <Route 
+          path="/" 
+          element={<PortfolioPage theme={theme} toggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")} />} 
+        />
+        
+        {/* Admin Panel - Separate Page */}
+        <Route path="/admin" element={<Admin />} />
+        
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
