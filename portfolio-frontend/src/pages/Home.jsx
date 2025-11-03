@@ -21,7 +21,8 @@ export default function Home() {
             transition={{ type: 'spring', stiffness: 200 }}
           >
             Hi, I’m <span className="text-amber-500 dark:text-amber-500">Joel</span>
-            <br /> A Full-Stack Developer
+            <br />
+            <span className=""></span>A Full-Stack Developer
           </motion.h2>
 
           <p className="text-lg leading-relaxed max-w-xl font-outfit text-stone-600 dark:text-gray-300">
