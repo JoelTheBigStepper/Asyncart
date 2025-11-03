@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Contact() {
   const [name, setName] = useState("");
@@ -8,14 +9,10 @@ export default function Contact() {
   const [feedback, setFeedback] = useState("");
   const [sending, setSending] = useState(false);
 
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setErrors({});
     setFeedback("");
 
@@ -31,90 +28,107 @@ export default function Contact() {
     }
 
     setSending(true);
-
     try {
       const response = await fetch("https://asyncart.onrender.com/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message }),
       });
-
       const data = await response.json();
 
       if (data.success) {
-        setFeedback("Your message has been sent successfully!");
+        setFeedback("✅ Message sent successfully!");
         setName("");
         setEmail("");
         setMessage("");
       } else {
-        // Display email-specific error if present
-        if (data.message?.toLowerCase().includes("email")) {
-          setErrors(prev => ({ ...prev, email: data.message }));
-        } else {
-          setFeedback(data.message || "There was an error sending your message.");
-        }
+        setFeedback(data.message || "There was an issue sending your message.");
       }
-
-    } catch (error) {
+    } catch {
       setFeedback("Something went wrong. Please try again later.");
     } finally {
       setSending(false);
-      setTimeout(() => {
-        setFeedback("");
-      }, 5000);
+      setTimeout(() => setFeedback(""), 5000);
     }
   };
 
   return (
-    <section id="contact" className="p-10 mx-auto max-w-lg sm:max-w-xl md:max-w-2xl">
-      <h2 className="text-3xl font-bold mb-6">Contact Me</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <input
-            type="text"
-            placeholder="Your Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-3 rounded border border-1 border-stone-600 bg-transparent dark:bg-stone-800 placeholder:text-stone-500 placeholder:dark:text-white"
-          />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-        </div>
+    <section
+      id="contact"
+      className="min-h-screen flex flex-col justify-center items-center px-6 py-20 bg-white text-stone-900 dark:bg-black dark:text-white transition-colors duration-500"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-2xl text-center space-y-6"
+      >
+        <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          Get In <span className="text-amber-500">Touch</span>
+        </h2>
+        <p className="text-stone-600 dark:text-gray-400 max-w-xl mx-auto mb-8">
+          Have a project, idea, or collaboration in mind? Drop me a message — I’ll get back to you as soon as possible.
+        </p>
 
-        <div>
-          <input
-            type="email"
-            placeholder="Your Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 rounded border border-1 border-stone-600 bg-transparent dark:bg-stone-800 placeholder:text-stone-500 placeholder:dark:text-white"
-          />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-5 text-left">
+          {/* Name */}
+          <div>
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-4 rounded-xl border border-stone-300 dark:border-stone-700 bg-transparent placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          </div>
 
-        <div>
-          <textarea
-            placeholder="Your Message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full p-3 rounded border border-1 border-stone-600 bg-transparent dark:bg-stone-800 placeholder:text-stone-500 placeholder:dark:text-white h-32"
-          />
-          {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
-        </div>
+          {/* Email */}
+          <div>
+            <input
+              type="email"
+              placeholder="Your Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-4 rounded-xl border border-stone-300 dark:border-stone-700 bg-transparent placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          </div>
 
-        <button
-          type="submit"
-          className="dark:bg-white bg-black text-stone-300 dark:text-black font-medium px-6 py-3 rounded w-full"
-          disabled={sending}
-        >
-          {sending ? "Sending..." : "Send Message"}
-        </button>
+          {/* Message */}
+          <div>
+            <textarea
+              placeholder="Your Message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full p-4 rounded-xl border border-stone-300 dark:border-stone-700 bg-transparent placeholder:text-stone-400 dark:placeholder:text-stone-500 h-32 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+            {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+          </div>
 
-        {feedback && (
-          <p className={`text-sm ${feedback.includes("successfully") ? "text-green-500" : "text-red-500"}`}>
-            {feedback}
-          </p>
-        )}
-      </form>
+          {/* Button */}
+          <motion.button
+            type="submit"
+            disabled={sending}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full bg-amber-500 text-white dark:text-black dark:bg-white font-semibold px-6 py-3 rounded-xl hover:bg-amber-600 dark:hover:bg-stone-200 transition-all shadow-md"
+          >
+            {sending ? "Sending..." : "Send Message"}
+          </motion.button>
+
+          {/* Feedback */}
+          {feedback && (
+            <p
+              className={`text-sm text-center ${
+                feedback.includes("success") ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {feedback}
+            </p>
+          )}
+        </form>
+      </motion.div>
     </section>
   );
 }
