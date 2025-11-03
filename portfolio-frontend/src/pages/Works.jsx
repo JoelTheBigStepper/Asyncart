@@ -2,65 +2,28 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import WorkProjectCard from "../components/WorkProjectCard";
 
-const STORAGE_KEY = 'portfolio-projects';
-
-// Fallback projects if storage is empty
-const fallbackProjects = [
-  {
-    id: 1,
-    title: "Asyncart Portfolio",
-    description:
-      "A refined full-stack portfolio built with React, Express, and TailwindCSS – featuring Nodemailer email integration, Mailboxlayer verification, and elegant motion design.",
-    image: "/images/portfolio-preview.jpg",
-    code: "https://github.com/joelcaesar/asyncart",
-    demo: "https://asyncart.vercel.app",
-  },
-  {
-    id: 2,
-    title: "E-commerce UI",
-    description:
-      "A responsive and elegant shopping interface with React and TailwindCSS – focusing on grid harmony, hover balance, and luxury brand feel.",
-    image: "/images/ecommerce-ui.jpg",
-    code: "https://github.com/joelcaesar/ecommerce-ui",
-    demo: "https://ecommerce-demo.com",
-  },
-  {
-    id: 3,
-    title: "Culinara Recipe App",
-    description:
-      "A recipe-sharing web app with search, trending logic, like/share features, and MockAPI backend – built using React, Tailwind, and Framer Motion.",
-    image: "/images/culinara.jpg",
-    code: "https://github.com/joelcaesar/culinara",
-    demo: "https://culinara.vercel.app",
-  },
-];
-
 export default function Works() {
   const [selected, setSelected] = useState(null);
-  const [projects, setProjects] = useState(fallbackProjects);
+  const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadProjects();
+    fetchProjects();
   }, []);
 
-  const loadProjects = async () => {
+  const fetchProjects = async () => {
     try {
       setIsLoading(true);
-      
-      // Check if storage API is available
-      if (typeof window !== 'undefined' && window.storage) {
-        const result = await window.storage.get(STORAGE_KEY);
-        if (result && result.value) {
-          const storedProjects = JSON.parse(result.value);
-          if (storedProjects && storedProjects.length > 0) {
-            setProjects(storedProjects);
-          }
-        }
+      const res = await fetch("https://your-backend-url.onrender.com/api/projects"); 
+      const data = await res.json();
+
+      if (data.success && data.projects?.length > 0) {
+        setProjects(data.projects);
+      } else {
+        console.warn("No projects found, using fallback");
       }
     } catch (error) {
-      console.log('Using fallback projects');
-      // Keep fallback projects if storage fails
+      console.error("Error fetching projects:", error);
     } finally {
       setIsLoading(false);
     }
@@ -85,23 +48,27 @@ export default function Works() {
         </p>
       </motion.div>
 
-      {/* Loading State */}
       {isLoading ? (
         <div className="text-center py-12">
           <p className="text-stone-600 dark:text-gray-400">Loading projects...</p>
         </div>
       ) : (
         <>
-          {/* Project Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, idx) => (
-              <WorkProjectCard 
-                key={project.id || idx} 
-                project={project} 
-                onClick={() => setSelected(project)} 
-              />
-            ))}
-          </div>
+          {projects.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {projects.map((project, idx) => (
+                <WorkProjectCard
+                  key={project._id || idx}
+                  project={project}
+                  onClick={() => setSelected(project)}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-stone-600 dark:text-gray-400">
+              No projects added yet.
+            </p>
+          )}
 
           {/* Modal */}
           <AnimatePresence>
