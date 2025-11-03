@@ -1,48 +1,118 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import WorkProjectCard from "../components/WorkProjectCard";
 
 const projects = [
   {
-    title: "Portfolio Website",
+    title: "Asyncart Portfolio",
     description:
-      "A modern portfolio built with React, Express, and TailwindCSS to showcase my creative work and skills.",
+      "A refined full-stack portfolio built with React, Express, and TailwindCSS — featuring Nodemailer email integration, Mailboxlayer verification, and elegant motion design.",
     image: "/images/portfolio-preview.jpg",
-    code: "https://github.com/username/portfolio",
-    demo: "https://yourportfolio.com",
+    code: "https://github.com/joelcaesar/asyncart",
+    demo: "https://asyncart.vercel.app",
   },
   {
     title: "E-commerce UI",
     description:
-      "Responsive and elegant shopping interface with React + Tailwind, focusing on user experience and layout balance.",
+      "A responsive and elegant shopping interface with React and TailwindCSS — focusing on grid harmony, hover balance, and luxury brand feel.",
     image: "/images/ecommerce-ui.jpg",
-    code: "https://github.com/username/ecommerce-ui",
+    code: "https://github.com/joelcaesar/ecommerce-ui",
     demo: "https://ecommerce-demo.com",
   },
   {
-    title: "Blog Platform",
+    title: "Culinara Recipe App",
     description:
-      "A sleek, modern blog built with clean UI and smooth interactions using React and Markdown rendering.",
-    image: "/images/blog-platform.jpg",
-    code: "https://github.com/username/blog-platform",
-    demo: "https://blog-demo.com",
+      "A recipe-sharing web app with search, trending logic, like/share features, and MockAPI backend — built using React, Tailwind, and Framer Motion.",
+    image: "/images/culinara.jpg",
+    code: "https://github.com/joelcaesar/culinara",
+    demo: "https://culinara.vercel.app",
   },
 ];
 
 export default function Works() {
+  const [selected, setSelected] = useState(null);
+
   return (
-    <section id="work" className="px-8 py-16 text-left bg-gray-50 dark:bg-stone-900 transition-colors duration-300">
-      <h2 className="text-3xl font-bold mb-3 text-stone-900 dark:text-white">
-        My Projects
-      </h2>
-      <p className="mb-10 text-stone-600 dark:text-gray-400 max-w-2xl">
-        Below are some of the projects I’ve worked on — blending design, interaction, and performance with modern web technologies.
-      </p>
+    <section
+      id="work"
+      className="min-h-screen px-6 md:px-16 py-24 text-left bg-white text-stone-900 dark:bg-black dark:text-white transition-colors duration-500 font-outfit"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+      >
+        <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          Selected <span className="text-amber-500">Works</span>
+        </h2>
+        <p className="mb-12 text-stone-600 dark:text-gray-400 max-w-2xl">
+          A curated selection of my most recent and impactful projects — blending design, interaction, and functionality.
+        </p>
+      </motion.div>
 
       {/* Project Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project, idx) => (
-          <WorkProjectCard key={idx} project={project} />
+          <WorkProjectCard key={idx} project={project} onClick={() => setSelected(project)} />
         ))}
       </div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white dark:bg-stone-900 rounded-2xl p-6 max-w-lg w-full relative text-stone-900 dark:text-white shadow-2xl"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <button
+                onClick={() => setSelected(null)}
+                className="absolute top-3 right-4 text-stone-600 dark:text-gray-400 hover:text-amber-500 text-2xl font-bold"
+              >
+                ×
+              </button>
+
+              <img
+                src={selected.image}
+                alt={selected.title}
+                className="rounded-xl mb-5 w-full object-cover max-h-64 border border-stone-200 dark:border-stone-700"
+              />
+              <h3 className="text-2xl font-bold mb-2 text-amber-500">{selected.title}</h3>
+              <p className="text-stone-700 dark:text-gray-300 mb-6 leading-relaxed">
+                {selected.description}
+              </p>
+
+              <div className="flex gap-4">
+                <a
+                  href={selected.demo}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition-colors font-semibold"
+                >
+                  Live Site
+                </a>
+                <a
+                  href={selected.code}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="border border-amber-500 text-amber-500 px-5 py-2 rounded-lg hover:bg-amber-500 hover:text-white transition-colors font-semibold"
+                >
+                  Code
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
