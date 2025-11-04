@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import AboutMoreModal from "../components/AboutMoreModal";
 import {
   SiHtml5,
   SiCss3,
@@ -10,6 +12,8 @@ import {
   SiMongodb,
   SiExpress,
 } from "react-icons/si";
+
+
 
 const skills = [
   { name: "HTML", icon: SiHtml5 },
@@ -24,11 +28,14 @@ const skills = [
 ];
 
 export default function About() {
+  const [showMore, setShowMore] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <section
       id="about"
-      className="min-h-screen flex flex-col md:flex-row items-center justify-between px-6 md:px-16 py-24
-                 bg-white text-stone-900 dark:bg-black dark:text-white transition-colors duration-500 font-outfit"
+      className="min-h-screen flex flex-col md:flex-row items-center justify-between px-6 md:px-16 py-16 md:py-20
+                 bg-white text-stone-900 dark:bg-black dark:text-white transition-colors duration-500 font-outfit scroll-mt-10"
     >
       {/* LEFT - Text */}
       <motion.div
@@ -52,6 +59,15 @@ export default function About() {
         <blockquote className="border-l-4 border-amber-500 pl-4 italic text-stone-600 dark:text-gray-400 max-w-lg">
           “I aim for clarity, balance, and visual harmony in every project — from backend logic to elegant, responsive interfaces.”
         </blockquote>
+
+        <motion.button
+          onClick={() => setIsModalOpen(true)}
+          className="mt-8 px-6 py-3 bg-amber-500 text-white rounded-lg font-semibold hover:bg-amber-600 transition"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          More About Me
+        </motion.button>
       </motion.div>
 
       {/* RIGHT - Skills */}
@@ -79,6 +95,9 @@ export default function About() {
           </motion.div>
         ))}
       </motion.div>
+  
+      {/* ===== POP-UP MODAL ===== */}
+     <AboutMoreModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 }
