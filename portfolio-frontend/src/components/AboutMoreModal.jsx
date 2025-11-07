@@ -34,7 +34,7 @@ export default function AboutMoreModal({ isOpen, onClose }) {
           {/* Content */}
           <div className="space-y-4 leading-relaxed text-[1rem]">
             <p>
-              I’m <span className="font-semibold text-amber-600">Joel Caesar</span> — a passionate 
+              I’m <span className="font-semibold text-amber-600">Joel Ojo</span> — a passionate 
               <span className="text-amber-600 font-semibold"> Web Developer & Frontend Designer</span> 
               dedicated to building clean, responsive, and visually balanced digital experiences.
             </p>
