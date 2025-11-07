@@ -15,7 +15,7 @@ export default function Admin() {
   // ✅ Fetch projects from MongoDB backend
   const fetchProjects = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/projects");
+      const res = await fetch("https://asyncart.onrender.com/api/projects");
       const data = await res.json();
       if (data.success) setProjects(data.projects);
     } catch (err) {
@@ -54,7 +54,7 @@ export default function Admin() {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/projects", {
+      const res = await fetch("https://asyncart.onrender.com/api/projects", {
         method: "POST",
         body: data,
       });
@@ -79,7 +79,7 @@ export default function Admin() {
     if (!window.confirm("Are you sure you want to delete this project?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/projects/${id}`, {
+      const res = await fetch(`https://asyncart.onrender.com/api/projects/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
