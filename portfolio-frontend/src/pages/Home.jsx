@@ -37,13 +37,14 @@ export default function Home() {
           </motion.h2>
 
           <p className="text-lg leading-relaxed max-w-xl mx-auto md:mx-0 font-outfit text-stone-700 dark:text-gray-300">
-            I build modern, scalable, and responsive web applications using{" "}
+           I build modern, scalable, and responsive web applications using{" "}
             <span className="text-amber-600 font-semibold">React</span>,{" "}
             <span className="text-amber-600 font-semibold">Node.js</span>, and{" "}
-            <span className="text-amber-600 font-semibold">Express</span>. I integrate email and verification flows using{" "}
+            <span className="text-amber-600 font-semibold">Express</span>.  focusing on clean architecture and performance. I develop full-stack solutions that handle real-world functionality,  including secure email communication and verification using {" "}
             <span className="text-amber-600 font-semibold">Nodemailer</span> and{" "}
-            <span className="text-amber-600 font-semibold">Mailboxlayer</span>, and persist data with{" "}
+            <span className="text-amber-600 font-semibold">Mailboxlayer</span>, while efficiently managing data with {" "}
             <span className="text-amber-600 font-semibold">MongoDB</span>.
+             My approach combines functionality, scalability, and user-focused design to deliver reliable digital experiences.
           </p>
 
           <motion.a
