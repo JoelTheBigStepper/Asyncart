@@ -34,38 +34,44 @@ export default function AboutMoreModal({ isOpen, onClose }) {
           {/* Content */}
           <div className="space-y-4 leading-relaxed text-[1rem]">
             <p>
-              I’m <span className="font-semibold text-amber-600">Joel Ojo</span> — a passionate 
-              <span className="text-amber-600 font-semibold"> Web Developer & Frontend Designer</span> 
-              dedicated to building clean, responsive, and visually balanced digital experiences.
+              I’m <span className="font-semibold text-amber-600">Joel Ojo</span>, a 
+              <span className="text-amber-600 font-semibold"> Full-Stack Developer</span> focused on building 
+              modern, scalable, and visually refined web applications.
             </p>
 
             <p>
-              My core stack includes 
+              I work with 
               <span className="text-amber-600 font-semibold"> React</span>, 
-              <span className="text-amber-600 font-semibold"> TailwindCSS</span>, and 
-              <span className="text-amber-600 font-semibold"> Node.js</span>, where I focus on 
-              creating modern, user-centered web applications that combine performance with elegance.
+              <span className="text-amber-600 font-semibold"> TailwindCSS</span>, 
+              <span className="text-amber-600 font-semibold"> Node.js</span>, and 
+              <span className="text-amber-600 font-semibold"> Express</span> to create 
+              responsive, user-focused applications that balance performance with clean design.
             </p>
 
             <p>
-              I have hands-on experience integrating and managing APIs — including 
-              <span className="text-amber-600 font-semibold"> MockAPI</span> — to handle real-world 
-              data for dynamic, scalable applications.
+              I build full-stack systems with real-world functionality, structuring applications 
+              for scalability, maintainability, and efficient data handling using 
+              <span className="text-amber-600 font-semibold"> MongoDB</span>.
             </p>
 
             <p>
-              Beyond web development, I’m exploring 
-              <span className="text-amber-600 font-semibold"> Python</span> as a beginner and 
-              nurturing a growing interest in 
-              <span className="text-amber-600 font-semibold"> cybersecurity</span>, learning how to 
-              make systems both functional and secure.
+              I also have experience working with APIs and backend services, integrating dynamic 
+              data into applications and designing systems that handle real user interactions.
             </p>
 
             <p>
-              I value <span className="text-amber-600 font-semibold">attention to detail</span>, 
+              Beyond development, I’m expanding my knowledge in 
+              <span className="text-amber-600 font-semibold"> Python</span> and exploring 
+              <span className="text-amber-600 font-semibold"> cybersecurity</span>, with a 
+              focus on building secure and reliable systems.
+            </p>
+
+            <p>
+              I prioritize 
+              <span className="text-amber-600 font-semibold"> clarity</span>, 
               <span className="text-amber-600 font-semibold"> consistency</span>, and 
-              <span className="text-amber-600 font-semibold"> clarity in design</span> — ensuring 
-              every project I build feels polished, reliable, and meaningful.
+              <span className="text-amber-600 font-semibold"> attention to detail</span>,
+              ensuring every project feels polished, functional, and impactful.
             </p>
           </div>
         </motion.div>
