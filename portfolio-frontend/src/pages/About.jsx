@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import AboutMoreModal from "../components/AboutMoreModal";
 import {
   SiHtml5,
-  SiCss3,
+  // DiCss3,
   SiJavascript,
   SiReact,
   SiTailwindcss,
@@ -17,7 +17,7 @@ import {
 
 const skills = [
   { name: "HTML", icon: SiHtml5 },
-  { name: "CSS", icon: SiCss3 },
+  // { name: "CSS", icon: DiCss3 },
   { name: "JavaScript", icon: SiJavascript },
   { name: "React", icon: SiReact },
   { name: "Tailwind", icon: SiTailwindcss },
