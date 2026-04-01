@@ -50,14 +50,14 @@ export default function About() {
         </h2>
 
         <p className="text-lg text-stone-600 dark:text-gray-300 leading-relaxed max-w-xl">
-          I’m Joel — a <span className="text-amber-500 font-semibold">Full-Stack Developer</span> passionate about crafting seamless digital experiences.
-          I specialize in <span className="text-amber-500">React</span>, <span className="text-amber-500">Node.js</span>, <span className="text-amber-500">Express</span>, and <span className="text-amber-500">MongoDB</span>,
-          blending functionality with refined design.  
-          I also integrate email and verification flows using <span className="text-amber-500">Nodemailer</span> and <span className="text-amber-500">Mailboxlayer</span> APIs.
+          I’m Joel — a <span className="text-amber-500 font-semibold">Full-Stack Developer</span> focused on building seamless, high-performance digital experiences.
+          I work with <span className="text-amber-500">React</span>, <span className="text-amber-500">Node.js</span>, <span className="text-amber-500">Express</span>, and <span className="text-amber-500">MongoDB</span>,
+            to create scalable applications that balance functionality with clean, refined design, ensuring reliability in real-world use cases.
+            My approach combines technical excellence with user-focused design, delivering solutions that are both powerful and intuitive.
         </p>
 
         <blockquote className="border-l-4 border-amber-500 pl-4 italic text-stone-600 dark:text-gray-400 max-w-lg">
-          “I aim for clarity, balance, and visual harmony in every project — from backend logic to elegant, responsive interfaces.”
+          “I prioritize clarity, consistency, and visual balance in every project, from backend architecture to responsive, user-focused interfaces.”
         </blockquote>
 
         <motion.button
