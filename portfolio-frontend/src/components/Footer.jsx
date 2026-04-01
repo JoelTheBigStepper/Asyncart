@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Twitter, Linkedin, Githubn} from "lucide-react";
+import { Twitter, Linkedin, Github} from "lucide-react";
 
 export default function Footer() {
 
