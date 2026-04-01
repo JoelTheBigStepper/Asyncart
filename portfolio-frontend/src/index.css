@@ -1,9 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* src/index.css */
+@import "tailwindcss";
 
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
+
+/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
 
 
 html {
@@ -13,4 +13,4 @@ html {
 
 .font-outfit {
   font-family: 'Outfit', sans-serif;
-}
+} */
