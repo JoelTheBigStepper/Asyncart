@@ -1,10 +1,8 @@
 import { motion } from "framer-motion";
-import { Facebook, Twitter, Linkedin, Github, ArrowUp } from "lucide-react";
+import { Twitter, Linkedin, Githubn} from "lucide-react";
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+
 
   return (
     <motion.footer
