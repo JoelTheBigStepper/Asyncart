@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import AboutMoreModal from "../components/AboutMoreModal";
 import {
   SiHtml5,
@@ -28,7 +28,6 @@ const skills = [
 ];
 
 export default function About() {
-  const [showMore, setShowMore] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
