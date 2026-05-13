@@ -8,10 +8,13 @@ import dotenv from "dotenv";
 import axios from "axios";
 import mongoose from "mongoose";
 import projectRoutes from "./routes/projectRoutes.js";
+import webhookRoutes from "./routes/webhook.js";
 
 dotenv.config();
 
 const app = express();
+// const webhookRoutes = require('./routes/webhook');
+
 
 // ============================
 // 🌍 MIDDLEWARE
@@ -26,6 +29,7 @@ app.use(
     credentials: true,
   })
 );
+app.use('/webhooks', webhookRoutes);
 app.use(express.json());
 
 // ============================
