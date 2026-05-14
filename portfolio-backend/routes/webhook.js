@@ -1,8 +1,10 @@
-import express from "express";
-import crypto from "crypto";
-import Project from "../models/Projects.js"; // your existing Project model
-
+// ============================================================
+// FILE: routes/webhook.js (add this to your asyncart backend)
+// ============================================================
+const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
+import Project from '../models/Projects' // your existing Project model
 
 // ─── Signature verification middleware ───────────────────────────────────────
 function verifyVelastruxSignature(req, res, next) {
@@ -62,9 +64,13 @@ router.post(
         case 'record.updated': {
           // data.record._externalId is the original MongoDB _id from asyncart
           const { _externalId, _recordId, _velastruxId, ...fields } = data.record;
-          if (!_externalId) break;
-          await Project.findByIdAndUpdate(_externalId, fields, { new: true });
-          console.log(`[Velastrux] Updated project ${_externalId}`);
+          if (!_externalId || _externalId.startsWith('local_')) break;
+          try {
+            await Project.findByIdAndUpdate(_externalId, fields, { new: true });
+            console.log(`[Velastrux] Updated project ${_externalId}`);
+          } catch (castErr) {
+            console.error(`[Velastrux] Invalid ID for update: ${_externalId}`);
+          }
           break;
         }
 
@@ -80,10 +86,21 @@ router.post(
           // Locally created records in Velastrux — save to asyncart DB
           // Strip Velastrux-internal fields before saving
           const { _externalId, _recordId, _velastruxId, ...fields } = data.record;
-          const existing = await Project.findById(_externalId);
+
+          // _externalId for locally created records is a timestamp string like "local_1234"
+          // not a valid MongoDB ObjectId — use findById safely
+          let existing = null;
+          if (_externalId && !_externalId.startsWith('local_')) {
+            try {
+              existing = await Project.findById(_externalId);
+            } catch {
+              // Invalid ObjectId — treat as new record
+            }
+          }
+
           if (!existing) {
             await Project.create(fields);
-            console.log(`[Velastrux] Created new project`);
+            console.log(`[Velastrux] Created new project from Velastrux`);
           }
           break;
         }
@@ -116,4 +133,19 @@ router.post(
   }
 );
 
-export default router;
+module.exports = router;
+
+// ─── How to register in your asyncart server.js ──────────────────────────────
+//
+// const webhookRoutes = require('./routes/webhook');
+//
+// // Register BEFORE express.json() middleware so raw body is preserved
+// app.use('/webhooks', webhookRoutes);
+//
+// // Then your normal middleware
+// app.use(express.json());
+//
+// ─── Add to your .env ─────────────────────────────────────────────────────────
+//
+// VELASTRUX_WEBHOOK_SECRET=whsec_<the secret shown when you created the webhook>
+//
