@@ -133,7 +133,7 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;
 
 // ─── How to register in your asyncart server.js ──────────────────────────────
 //
