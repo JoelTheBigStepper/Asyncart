@@ -52,7 +52,7 @@ function verifyVelastruxSignature(req, res, next) {
 // ─── Webhook receiver ─────────────────────────────────────────────────────────
 // IMPORTANT: use express.raw() for this route so the raw body is available
 // for signature verification. Must be registered BEFORE express.json() parses it.
-router.post(
+Router.post(
   '/velastrux',
   express.raw({ type: 'application/json' }),
   verifyVelastruxSignature,
@@ -133,4 +133,4 @@ router.post(
   }
 );
 
-export default router;
+export default Router;
