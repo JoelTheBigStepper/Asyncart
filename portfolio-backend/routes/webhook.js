@@ -7,6 +7,7 @@ import { Router } from "express";
 import Project from "../models/Projects.js"; // your existing Project model
 
 const router = Router();
+// ─── Signature verification middleware ───────────────────────────────────────
 function verifyVelastruxSignature(req, res, next) {
   const signature = req.headers['x-velastrux-signature'];
   const event = req.headers['x-velastrux-event'];
@@ -49,6 +50,18 @@ function verifyVelastruxSignature(req, res, next) {
   next();
 }
 
+// ─── Wait for mongoose to be connected ───────────────────────────────────────
+async function waitForDB(maxWaitMs = 30000) {
+  const mongoose = require('mongoose');
+  const start = Date.now();
+  while (mongoose.connection.readyState !== 1) {
+    if (Date.now() - start > maxWaitMs) {
+      throw new Error('Database not ready after 30 seconds');
+    }
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+
 // ─── Webhook receiver ─────────────────────────────────────────────────────────
 // IMPORTANT: use express.raw() for this route so the raw body is available
 // for signature verification. Must be registered BEFORE express.json() parses it.
@@ -59,7 +72,14 @@ router.post(
   async (req, res) => {
     const { event, data } = req.velastruxPayload;
 
+    // Respond immediately so Velastrux marks delivery as received
+    // Then process async — prevents timeout on Render cold starts
+    res.status(200).json({ received: true });
+
     try {
+      // Wait for MongoDB to be fully connected before any DB operations
+      await waitForDB();
+
       switch (event) {
         case 'record.updated': {
           // data.record._externalId is the original MongoDB _id from asyncart
@@ -121,14 +141,9 @@ router.post(
           console.log(`[Velastrux] Unknown event: ${event}`);
       }
 
-      // Always respond 200 quickly — Velastrux marks delivery as successful
-      res.status(200).json({ received: true });
-
     } catch (err) {
+      // Error is logged server-side — response already sent
       console.error('[Velastrux] Webhook processing error:', err.message);
-      // Still return 200 to prevent Velastrux from retrying
-      // Log the error internally for debugging
-      res.status(200).json({ received: true, warning: 'Processing error logged' });
     }
   }
 );
