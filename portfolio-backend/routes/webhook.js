@@ -6,7 +6,7 @@ import crypto from "crypto";
 import { Router } from "express";
 import Project from "../models/Projects.js"; // your existing Project model
 
-// ─── Signature verification middleware ───────────────────────────────────────
+const router = Router();
 function verifyVelastruxSignature(req, res, next) {
   const signature = req.headers['x-velastrux-signature'];
   const event = req.headers['x-velastrux-event'];
@@ -52,7 +52,7 @@ function verifyVelastruxSignature(req, res, next) {
 // ─── Webhook receiver ─────────────────────────────────────────────────────────
 // IMPORTANT: use express.raw() for this route so the raw body is available
 // for signature verification. Must be registered BEFORE express.json() parses it.
-Router.post(
+router.post(
   '/velastrux',
   express.raw({ type: 'application/json' }),
   verifyVelastruxSignature,
@@ -133,4 +133,4 @@ Router.post(
   }
 );
 
-export default Router;
+export default router;
