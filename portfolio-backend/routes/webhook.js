@@ -1,7 +1,7 @@
 // ============================================================
 // FILE: routes/webhook.js (add this to your asyncart backend)
 // ============================================================
-const express = require('express');
+import express from "express";
 const router = express.Router();
 const crypto = require('crypto');
 import Project from "../models/Projects.js"; // your existing Project model
@@ -134,18 +134,3 @@ router.post(
 );
 
 export default router;
-
-// ─── How to register in your asyncart server.js ──────────────────────────────
-//
-// const webhookRoutes = require('./routes/webhook');
-//
-// // Register BEFORE express.json() middleware so raw body is preserved
-// app.use('/webhooks', webhookRoutes);
-//
-// // Then your normal middleware
-// app.use(express.json());
-//
-// ─── Add to your .env ─────────────────────────────────────────────────────────
-//
-// VELASTRUX_WEBHOOK_SECRET=whsec_<the secret shown when you created the webhook>
-//
