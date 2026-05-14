@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-import Project from '../models/Projects' // your existing Project model
+import Project from "../models/Projects.js"; // your existing Project model
 
 // ─── Signature verification middleware ───────────────────────────────────────
 function verifyVelastruxSignature(req, res, next) {
