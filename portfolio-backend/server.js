@@ -55,23 +55,9 @@ app.use("/api/projects", projectRoutes);
 // ⚡ START — connect DB first, then listen
 // ============================
 const PORT = process.env.PORT || 5000;
-const rawMongoUri = process.env.MONGODB_URI?.trim();
-
-if (!rawMongoUri) {
-  console.error("❌ MongoDB connection error: MONGODB_URI is not defined");
-  process.exit(1);
-}
-
-const normalizedMongoUri = rawMongoUri.startsWith("mongodb+srv://")
-  ? rawMongoUri.replace(/^(mongodb\+srv:\/\/)([^:/?#]+):\d+(@)/, "$1$2$3")
-  : rawMongoUri;
-
-if (normalizedMongoUri !== rawMongoUri) {
-  console.warn("⚠️ Normalized MongoDB URI by removing unsupported port from mongodb+srv connection string.");
-}
 
 mongoose
-  .connect(normalizedMongoUri)
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
     app.listen(PORT, () => {
