@@ -8,12 +8,11 @@ import dotenv from "dotenv";
 import axios from "axios";
 import mongoose from "mongoose";
 import projectRoutes from "./routes/projectRoutes.js";
-import webhookRoutes from "./routes/webhook.js";
 
 dotenv.config();
 
 const app = express();
-// const webhookRoutes = require('./routes/webhook');
+
 
 
 // ============================
@@ -23,9 +22,11 @@ app.use(
   cors({
     origin: [
       "https://asyncart.vercel.app", // Production
-      "http://localhost:3000",       // Local dev
+      "http://localhost:3000",
+      "http://localhost:5173",     // Local dev
     ],
-    methods: ["GET", "POST", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Velastrux-Token"],
     credentials: true,
   })
 );
@@ -43,6 +44,12 @@ mongoose
 // ============================
 // ☁️ ROUTES
 // ============================
+
+app.use(cors(app_cors_update));
+app.use(velastrux);              // <-- validates X-Velastrux-Token
+app.use('/webhooks', webhookRoutes);
+app.use(express.json());
+app.use('/api', yourRoutes);
 
 // --- Projects API (MongoDB + Cloudinary)
 app.use("/api/projects", projectRoutes);
