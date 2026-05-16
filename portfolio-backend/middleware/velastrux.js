@@ -1,61 +1,31 @@
-// ============================
-// 🔐 VELASTRUX AUTHENTICATION MIDDLEWARE
-// ============================
-// Validates requests from Velastrux origins with proper token verification
+// middleware/velastrux.js
+// Validates X-Velastrux-Token on all /api requests from Velastrux dashboard
 
-const VELASTRUX_ORIGINS = [
-  'http://localhost:5173',
-  'https://velastrux.app',
-  // Add your deployed Velastrux frontend URL here
-];
-
-/**
- * Velastrux Authentication Middleware
- * Validates:
- * 1. Request origin is from trusted Velastrux sources
- * 2. X-Velastrux-Token header matches environment variable
- */
-const velastruxMiddleware = (req, res, next) => {
-  const origin = req.headers.origin || '';
+export default function velastrux(req, res, next) {
   const token = req.headers['x-velastrux-token'];
+  const origin = req.headers.origin || '';
 
-  // Check if this is a Velastrux request
-  const isVelastruxRequest = VELASTRUX_ORIGINS.some(o => origin.startsWith(o)) ||
-    origin.includes('velastrux');
+  // Only validate requests coming from a Velastrux origin
+  const isVelastruxRequest = token !== undefined;
 
-  // If it's a Velastrux request, validate the token
-  if (isVelastruxRequest) {
-    // Check if token is configured
-    if (!process.env.VELASTRUX_TOKEN) {
-      console.error('🔐 [Velastrux] ❌ VELASTRUX_TOKEN not set in .env');
-      return res.status(500).json({
-        error: 'Server configuration error: Velastrux token not configured',
-        code: 'CONFIG_ERROR',
-      });
-    }
-
-    // Validate token
-    if (!token) {
-      console.warn(`🔐 [Velastrux] ⚠️ Missing token from origin: ${origin}`);
-      return res.status(401).json({
-        error: 'Missing X-Velastrux-Token header',
-        code: 'MISSING_TOKEN',
-      });
-    }
-
-    if (token !== process.env.VELASTRUX_TOKEN) {
-      console.warn(`🔐 [Velastrux] ⚠️ Invalid token from origin: ${origin}`);
-      return res.status(401).json({
-        error: 'Invalid Velastrux token',
-        code: 'INVALID_TOKEN',
-      });
-    }
-
-    console.log(`✅ [Velastrux] Authenticated request from: ${origin}`);
+  if (!isVelastruxRequest) {
+    // Not a Velastrux request — pass through to your normal auth
+    return next();
   }
 
-  // Allow request to proceed
-  next();
-};
+  // It's a Velastrux request — validate the token
+  const expectedToken = process.env.VELASTRUX_TOKEN;
 
-export default velastruxMiddleware;
+  if (!expectedToken) {
+    console.error('[Velastrux] ❌ VELASTRUX_TOKEN not set in .env');
+    return res.status(500).json({ error: 'Velastrux token not configured on server' });
+  }
+
+  if (token !== expectedToken) {
+    return res.status(401).json({ error: 'Invalid Velastrux token' });
+  }
+
+  // Valid token — mark request as Velastrux so routes know
+  req.isVelastrux = true;
+  next();
+}

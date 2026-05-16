@@ -13,67 +13,58 @@ dotenv.config();
 
 const app = express();
 
-
-
 // ============================
-// 🌍 MIDDLEWARE - CRITICAL ORDER
+// 🌍 MIDDLEWARE
 // ============================
-// 1. CORS must be first to handle cross-origin requests
-app.use(
-  cors({
-    origin: [
-      "https://asyncart.vercel.app", // Production
-      "http://localhost:3000",
-      "http://localhost:5173",       // Local dev
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Velastrux-Token"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "https://asyncart.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:5174",
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Velastrux-Token"],
+  credentials: true,
+}));
 
-// 2. Body parsing middleware
 app.use(express.json());
 
-// 3. Authentication/Validation middleware BEFORE routes
-app.use(velastrux); // ✅ Validates X-Velastrux-Token header
+// ============================
+// 🏥 HEALTH CHECK (public — no auth, no DB needed)
+// ============================
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    db: mongoose.connection.readyState === 1 ? "connected" : "connecting"
+  });
+});
 
 // ============================
-// ⚡ CONNECT TO MONGODB
+// 🔐 VELASTRUX AUTH MIDDLEWARE
+// Only applies to /api routes — not /health
 // ============================
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+app.use("/api", velastrux);
 
 // ============================
 // 📡 ROUTES
 // ============================
-// All routes are protected by velastrux middleware (registered above)
-
-// Projects API (MongoDB + Cloudinary)
 app.use("/api/projects", projectRoutes);
 
-// Health check (public endpoint - no auth required)
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "Server is running" });
-});
-
-
-
 // ============================
-// 🚀 START SERVER
+// ⚡ START — connect DB first, then listen
 // ============================
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log("\n");
-  console.log("╔════════════════════════════════════╗");
-  console.log("║  🚀 SERVER STARTED SUCCESSFULLY   ║");
-  console.log("╠════════════════════════════════════╣");
-  console.log(`║  Port: ${PORT}`.padEnd(36) + "║");
-  console.log(`║  Env: ${process.env.NODE_ENV || "development"}`.padEnd(36) + "║");
-  console.log("║  Middleware: CORS → JSON → Auth    ║");
-  console.log("╚════════════════════════════════════╝");
-  console.log("\n");
-});
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });
