@@ -18,11 +18,38 @@ router.get("/", async (req, res) => {
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const { title, description, code, demo } = req.body;
-    const image = req.file?.path; // Cloudinary image URL
+    const image = req.file?.path;
     const project = await Project.create({ title, description, image, code, demo });
     res.json({ success: true, project });
   } catch (err) {
     res.status(500).json({ success: false, message: "Error adding project" });
+  }
+});
+
+// Update project (called by Velastrux dashboard)
+router.put("/:id", async (req, res) => {
+  try {
+    const { title, description, code, demo, image } = req.body;
+    const updates = {};
+    if (title !== undefined) updates.title = title;
+    if (description !== undefined) updates.description = description;
+    if (code !== undefined) updates.code = code;
+    if (demo !== undefined) updates.demo = demo;
+    if (image !== undefined) updates.image = image;
+
+    const project = await Project.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      { new: true, runValidators: true }
+    );
+
+    if (!project) {
+      return res.status(404).json({ success: false, message: "Project not found" });
+    }
+
+    res.json({ success: true, project });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Error updating project" });
   }
 });
 
