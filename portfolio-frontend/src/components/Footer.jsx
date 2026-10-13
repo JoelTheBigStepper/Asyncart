@@ -1,41 +1,44 @@
-import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter } from "lucide-react";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const social = [
-  { href: "https://github.com/JoelTheBigStepper", label: "GitHub", icon: Github },
-  { href: "https://x.com/JoelDaBigSteppa", label: "X / Twitter", icon: Twitter },
-  { href: "https://linkedin.com/", label: "LinkedIn", icon: Linkedin },
+  { href: "https://github.com/JoelTheBigStepper", label: "GitHub", icon: FaGithub },
+  { href: "https://x.com/JoelDaBigSteppa", label: "X", icon: FaTwitter },
+  { href: "https://linkedin.com/", label: "LinkedIn", icon: FaLinkedin },
 ];
 
 export default function Footer() {
   return (
-    <motion.footer
-      className="bg-ink dark:bg-void text-white border-t-[3px] border-ink dark:border-white pt-12 pb-8 mt-24"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-        <p className="font-mono text-sm text-white/70">
-          © {new Date().getFullYear()} <span className="text-acid">AsyncArt</span> — built by Joel
-        </p>
-
-        <div className="flex items-center gap-4">
-          {social.map(({ href, label, icon: Icon }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              className="press p-2.5 border-[3px] border-white bg-transparent shadow-brut-white-sm hover:bg-flame hover:border-flame transition-colors"
-            >
-              <Icon className="w-4 h-4" />
-            </a>
-          ))}
+    <footer className="bg-forest px-6 pb-8 pt-16 text-cream md:px-12">
+      <div className="mx-auto flex max-w-6xl flex-col gap-10 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="font-display text-4xl font-extrabold tracking-tight md:text-5xl">
+            Async<span className="text-panel2">Art</span>
+          </p>
+          <p className="mt-3 max-w-sm text-cream/80">
+            Joel Ojo, full-stack developer in Ibadan, Nigeria.
+          </p>
         </div>
+
+        <ul className="flex items-center gap-3">
+          {social.map(({ href, label, icon: Icon }) => (
+            <li key={label}>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="glass-dark flex h-11 w-11 items-center justify-center rounded-full transition-all hover:-translate-y-0.5 hover:bg-panel2 hover:text-forest"
+              >
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-    </motion.footer>
+
+      <p className="mx-auto mt-12 max-w-6xl border-t border-cream/20 pt-6 text-sm text-cream/70">
+        &copy; {new Date().getFullYear()} AsyncArt. All rights reserved.
+      </p>
+    </footer>
   );
 }

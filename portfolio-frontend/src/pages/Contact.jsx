@@ -1,35 +1,37 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { Loader2, Send } from "lucide-react";
+import SectionHeading from "../components/SectionHeading";
+import LetterField from "../components/LetterField";
+import AmbientOrbs from "../components/AmbientOrbs";
+import Reveal from "../components/Reveal";
+
+const SEND_URL = "https://asyncart.onrender.com/send-email";
+const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 export default function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
-  const [feedback, setFeedback] = useState("");
+  const [status, setStatus] = useState({ type: "idle", text: "" });
   const [sending, setSending] = useState(false);
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setStatus({ type: "idle", text: "" });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrors({});
-    setFeedback("");
+    const next = {};
+    if (!name.trim()) next.name = "Tell me your name.";
+    if (!email.trim()) next.email = "Add an email so I can reply.";
+    else if (!validateEmail(email)) next.email = "That email does not look right. Check it and try again.";
+    if (!message.trim()) next.message = "Say a few words about what you have in mind.";
 
-    const newErrors = {};
-    if (!name) newErrors.name = "Name is required!";
-    if (!email) newErrors.email = "Email is required!";
-    else if (!validateEmail(email)) newErrors.email = "Please enter a valid email!";
-    if (!message) newErrors.message = "Message is required!";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
 
     setSending(true);
     try {
-      const response = await fetch("https://asyncart.onrender.com/send-email", {
+      const response = await fetch(SEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message }),
@@ -37,96 +39,89 @@ export default function Contact() {
       const data = await response.json();
 
       if (data.success) {
-        setFeedback("Message sent successfully!");
+        setStatus({ type: "success", text: "Message sent. I will get back to you as soon as I can." });
         setName("");
         setEmail("");
         setMessage("");
       } else {
-        setFeedback(data.message || "There was an issue sending your message.");
+        setStatus({ type: "error", text: data.message || "The message did not send. Please try again." });
       }
     } catch {
-      setFeedback("Something went wrong. Please try again later.");
+      setStatus({ type: "error", text: "Could not reach the server. Check your connection and try again." });
     } finally {
       setSending(false);
-      setTimeout(() => setFeedback(""), 5000);
     }
   };
-
-  const inputClass =
-    "w-full p-4 border-brut bg-paper dark:bg-void placeholder:text-graphite focus:outline-none focus:shadow-brut-sm transition-shadow";
 
   return (
     <section
       id="contact"
-      className="px-6 py-24 bg-paper dark:bg-void text-ink dark:text-white"
+      aria-labelledby="contact-title"
+      className="relative scroll-mt-16 overflow-hidden px-6 py-20 md:px-12 md:py-28"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-        className="w-full max-w-2xl mx-auto"
-      >
-        <h2 className="text-4xl md:text-5xl font-display uppercase mb-4 text-center">
-          Get In Touch
-        </h2>
-        <p className="text-ink/70 dark:text-white/70 max-w-xl mx-auto mb-10 text-center">
-          Have a project, idea, or collaboration in mind? Drop me a message —
-          I'll get back to you as soon as possible.
-        </p>
+      <AmbientOrbs tone="onCanvas" />
+      <div className="relative mx-auto max-w-6xl">
+        <SectionHeading
+          id="contact-title"
+          title="Say hello"
+          intro="Fill in the letter below. It lands straight in my inbox."
+        />
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <input
-              type="text"
-              placeholder="Your Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={inputClass}
-            />
-            {errors.name && <p className="text-flame font-mono text-sm mt-1">{errors.name}</p>}
-          </div>
+        <Reveal className="glass-strong mt-14 max-w-3xl rounded-3xl p-6 md:p-10">
+        <form onSubmit={handleSubmit} noValidate className="space-y-10">
+          <LetterField
+            id="contact-name"
+            lead="Hi Joel, my name is"
+            value={name}
+            onChange={setName}
+            error={errors.name}
+            autoComplete="name"
+          />
+          <LetterField
+            id="contact-email"
+            lead="and you can reach me at"
+            type="email"
+            value={email}
+            onChange={setEmail}
+            error={errors.email}
+            autoComplete="email"
+          />
+          <LetterField
+            id="contact-message"
+            lead="I would like to talk about"
+            value={message}
+            onChange={setMessage}
+            error={errors.message}
+            multiline
+          />
 
-          <div>
-            <input
-              type="email"
-              placeholder="Your Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
-            />
-            {errors.email && <p className="text-flame font-mono text-sm mt-1">{errors.email}</p>}
-          </div>
-
-          <div>
-            <textarea
-              placeholder="Your Message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className={`${inputClass} h-32`}
-            />
-            {errors.message && <p className="text-flame font-mono text-sm mt-1">{errors.message}</p>}
-          </div>
-
-          <motion.button
-            type="submit"
-            disabled={sending}
-            className="press w-full bg-cobalt text-white font-mono uppercase font-bold px-6 py-4 border-brut shadow-brut"
-          >
-            {sending ? "Sending..." : "Send Message"}
-          </motion.button>
-
-          {feedback && (
-            <p
-              className={`font-mono text-sm text-center ${
-                feedback.includes("success") ? "text-cobalt" : "text-flame"
-              }`}
+          <div className="flex flex-wrap items-center gap-6">
+            <button
+              type="submit"
+              disabled={sending}
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 font-semibold text-canvas transition-colors hover:bg-link disabled:opacity-60"
             >
-              {feedback}
+              {sending ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> Sending
+                </>
+              ) : (
+                <>
+                  Send message <Send className="h-4 w-4" aria-hidden="true" />
+                </>
+              )}
+            </button>
+
+            <p
+              role={status.type === "error" ? "alert" : "status"}
+              className={`font-semibold ${status.type === "error" ? "text-danger" : "text-link"}`}
+            >
+              {status.text}
             </p>
-          )}
+          </div>
         </form>
-      </motion.div>
+        </Reveal>
+      </div>
     </section>
   );
 }

@@ -1,74 +1,106 @@
-import { motion } from "framer-motion";
-import myImage from "../assets/yh.png";
-import SkillTicker from "../components/SkillTicker";
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  ArrowDown,
+  Bug,
+  Building2,
+  Church,
+  LayoutDashboard,
+  Puzzle,
+  ShieldCheck,
+} from "lucide-react";
+import ProjectChip from "../components/ProjectChip";
+import HeroPortrait from "../components/HeroPortrait";
+import ToolMarquee from "../components/ToolMarquee";
+import { findProject } from "../data/realProjects";
 
-export default function Home() {
+export default function Home({ onOpen }) {
+  const reduce = useReducedMotion();
+  const open = (id) => () => onOpen(findProject(id));
+
   return (
     <>
-      <motion.section
-        id="hero"
-        className="relative px-6 pt-16 md:pt-20 pb-14 bg-paper dark:bg-void text-ink dark:text-white overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+      <section
+        id="home"
+        aria-labelledby="home-title"
+        className="relative flex scroll-mt-16 flex-col overflow-hidden lg:min-h-[720px]"
       >
-        <div className="container mx-auto flex flex-col md:flex-row items-center gap-14">
-          {/* Left, Text */}
-          <div className="flex-1 space-y-7 text-center md:text-left">
-            <span className="inline-block rotate-2 bg-acid text-ink font-mono text-sm px-3 py-1 border-brut shadow-brut-sm">
-              Available for work
-            </span>
-
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-display leading-[0.95] uppercase">
-              Hi, I am Joel.
-              <br />
-              <span className="text-cobalt">Full Stack</span>
-              <br />
-              Developer.
+        <div className="w-full px-6 pb-16 pt-6 md:px-12 lg:pb-24 lg:pt-16">
+          <div className="mx-auto max-w-6xl">
+          <div className="lg:w-[54%]">
+            <h1 id="home-title" className="sr-only">
+              Joel Ojo, full-stack developer in Ibadan, Nigeria
             </h1>
 
-            <p className="text-lg leading-relaxed max-w-xl mx-auto md:mx-0 text-ink/80 dark:text-white/80">
-              I build modern, scalable, and responsive web applications using React, Node.js, and Express, backed by MongoDB. My work consistently delivers functionality, scalability, and user focused design. I engineer robust solutions capable of handling real world complexity, ranging from AI powered medication verification platforms to dynamic REST API dashboard generators.
+            <motion.p
+              className="font-display text-[1.75rem] font-semibold leading-[1.25] tracking-tight sm:text-[2.1rem] lg:text-[clamp(1.8rem,2.4vw,2.45rem)]"
+              initial={reduce ? false : "hidden"}
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.3 } },
+              }}
+            >
+              I&apos;m Joel, a full-stack developer in Ibadan, Nigeria. I build software for
+              problems close to home.{" "}
+              <ProjectChip icon={ShieldCheck} tone="sage" onClick={open("medverify")}>
+                MedVerify
+              </ProjectChip>{" "}
+              checks whether a medicine is genuine.{" "}
+              <ProjectChip icon={LayoutDashboard} tone="blush" onClick={open("velastrux")}>
+                Velastrux
+              </ProjectChip>{" "}
+              turns any API into a dashboard.{" "}
+              <ProjectChip icon={Bug} tone="sage" onClick={open("synerdio")}>
+                Synerdio
+              </ProjectChip>{" "}
+              is a live, shared debugger for web pages.{" "}
+              <ProjectChip icon={Puzzle} tone="blush" onClick={open("kherphi")}>
+                Kherphi
+              </ProjectChip>{" "}
+              lets anyone redesign a web page from the browser.
+            </motion.p>
+
+            <p className="mt-7 text-lg leading-relaxed text-soft md:text-xl">
+              I also build sites for clients, like{" "}
+              <ProjectChip icon={Church} tone="blush" onClick={open("rhema")}>
+                Rhema Chapel Oluyole
+              </ProjectChip>{" "}
+              in Ibadan and{" "}
+              <ProjectChip icon={Building2} tone="sage" onClick={open("glare")}>
+                Glare Solutions
+              </ProjectChip>{" "}
+              in Lagos.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-              <motion.a
-                href="#contact"
-                className="press inline-block bg-flame text-white px-7 py-4 border-brut shadow-brut font-mono uppercase tracking-tight font-bold"
-              >
-                Get in Touch
-              </motion.a>
+            <motion.div
+              className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4"
+              initial={reduce ? false : { opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+            >
               <motion.a
                 href="#work"
-                className="press inline-block bg-transparent text-ink dark:text-white px-7 py-4 border-brut shadow-brut-sm font-mono uppercase tracking-tight font-bold"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 font-semibold text-canvas transition-colors hover:bg-link"
               >
-                See My Work
+                See the work <ArrowDown className="h-4 w-4" aria-hidden="true" />
               </motion.a>
-            </div>
+              <a
+                href="#contact"
+                className="font-semibold underline decoration-fill decoration-2 underline-offset-8 transition-colors hover:text-link"
+              >
+                Get in touch
+              </a>
+            </motion.div>
           </div>
-
-          {/* Right, Portrait */}
-          <motion.div
-            className="flex-1 flex justify-center relative w-full max-w-sm md:max-w-md"
-            initial={{ x: 60, opacity: 0, rotate: 4 }}
-            animate={{ x: 0, opacity: 1, rotate: -2 }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="absolute -top-4 -left-4 w-full h-full bg-cobalt border-brut" />
-            <img
-              src={myImage}
-              loading="lazy"
-              alt="Joel portrait"
-              className="relative w-full border-brut shadow-brut object-cover"
-            />
-            <span className="absolute -bottom-5 -right-5 bg-ink text-white dark:bg-white dark:text-ink font-mono text-xs px-3 py-2 border-brut rotate-3">
-              MERN Developer
-            </span>
-          </motion.div>
+          </div>
         </div>
-      </motion.section>
 
-      <SkillTicker />
+        <HeroPortrait />
+      </section>
+
+      <ToolMarquee />
     </>
   );
 }

@@ -1,72 +1,88 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { MotionConfig } from "framer-motion";
 import Header from "./components/Header";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Works from "./pages/Works";
-import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import ScrollToTopButton from "./components/ScrollToTopButton";
+import ProjectDrawer from "./components/ProjectDrawer";
+import Home from "./pages/Home";
+import Works from "./pages/Works";
+import Toolbox from "./pages/Toolbox";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
+import useProjects from "./hooks/useProjects";
 
 function PortfolioPage({ theme, toggleTheme }) {
+  const [selected, setSelected] = useState(null);
+  const closeProject = useCallback(() => setSelected(null), []);
+  const { groups, demoProjects } = useProjects();
+
   return (
     <>
       <Helmet>
-        <title>AsyncArt - Full-Stack Developer Portfolio</title>
+        <title>AsyncArt | Joel Ojo, Full-Stack Developer</title>
         <meta
           name="description"
-          content="Showcasing the work of a Full-Stack Developer. Expert in React, Node.js, Express, MongoDB, and Tailwind CSS."
+          content="Joel Ojo is a full-stack developer in Ibadan, Nigeria, building products and client websites with React, Node.js, Express and MongoDB."
         />
-        <meta name="keywords" content="Full-Stack Developer, React, Node.js, MongoDB, Web Development, Portfolio" />
-        <meta property="og:title" content="AsyncArt - Full-Stack Developer Portfolio" />
-        <meta property="og:description" content="Showcasing the work of a Full-Stack Developer." />
-        <meta property="og:image" content="URL_to_your_image.jpg" />
-        <meta property="og:url" content="https://www.yoursite.com" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AsyncArt - Full-Stack Developer Portfolio" />
-        <meta name="twitter:description" content="Showcasing the work of a Full-Stack Developer." />
-        <meta name="twitter:image" content="URL_to_your_image.jpg" />
+        <meta
+          name="keywords"
+          content="Full-Stack Developer, React, Node.js, Express, MongoDB, Tailwind CSS, Portfolio, Ibadan, Nigeria"
+        />
+        <meta property="og:title" content="AsyncArt | Joel Ojo, Full-Stack Developer" />
+        <meta
+          property="og:description"
+          content="Products and client websites built with React, Node.js, Express and MongoDB."
+        />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="AsyncArt | Joel Ojo, Full-Stack Developer" />
       </Helmet>
 
-      <div className="bg-paper text-ink dark:bg-void dark:text-white font-body transition-colors duration-300">
-        <Header theme={theme} toggleTheme={toggleTheme} />
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:font-semibold focus:text-canvas"
+      >
+        Skip to content
+      </a>
 
-        <section id="home"><Home /></section>
-        <section id="about"><About /></section>
-        <section id="works"><Works /></section>
-        <section id="contact"><Contact /></section>
+      <Header theme={theme} toggleTheme={toggleTheme} />
 
-        <ScrollToTopButton />
-        <Footer />
-      </div>
+      <main id="main">
+        <Home onOpen={setSelected} />
+        <Works groups={groups} demoProjects={demoProjects} onOpen={setSelected} />
+        <Toolbox />
+        <About />
+        <Contact />
+      </main>
+
+      <Footer />
+      <ScrollToTopButton />
+      <ProjectDrawer project={selected} onClose={closeProject} />
     </>
   );
 }
 
 export default function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
 
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  const toggleTheme = () => setTheme((current) => (current === "dark" ? "light" : "dark"));
+
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={<PortfolioPage theme={theme} toggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")} />}
-        />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+    <MotionConfig reducedMotion="user">
+      <Router>
+        <Routes>
+          <Route path="/" element={<PortfolioPage theme={theme} toggleTheme={toggleTheme} />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </MotionConfig>
   );
 }

@@ -1,113 +1,123 @@
-import { Sun, Moon, Home, User, Briefcase, Mail, X, Menu } from "lucide-react";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
+import useActiveSection from "../hooks/useActiveSection";
+import useLockBodyScroll from "../hooks/useLockBodyScroll";
 
 const links = [
-  { href: "#home", label: "Home", icon: Home },
-  { href: "#about", label: "About", icon: User },
-  { href: "#work", label: "Work", icon: Briefcase },
-  { href: "#contact", label: "Contact", icon: Mail },
+  { id: "work", label: "Work" },
+  { id: "toolbox", label: "Toolbox" },
+  { id: "about", label: "About" },
+  { id: "contact", label: "Contact" },
 ];
+const sectionIds = ["home", ...links.map((link) => link.id)];
 
 export default function Header({ theme, toggleTheme }) {
   const [isOpen, setIsOpen] = useState(false);
+  const active = useActiveSection(sectionIds);
+  useLockBodyScroll(isOpen);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "auto";
-    return () => (document.body.style.overflow = "auto");
+    if (!isOpen) return undefined;
+    const onKey = (event) => event.key === "Escape" && setIsOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [isOpen]);
-
-  const handleLinkClick = () => setIsOpen(false);
 
   return (
     <>
       <motion.header
-        className="sticky top-0 z-30 bg-paper dark:bg-void border-b-[3px] border-ink dark:border-white"
-        initial={{ y: -60, opacity: 0 }}
+        className="glass-bar sticky top-0 z-40 px-6 md:px-12"
+        initial={{ y: -64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          {/* Brand — stamp badge */}
-          <a
-            href="#home"
-            className="-rotate-2 inline-block bg-cobalt text-white font-display text-lg sm:text-xl px-4 py-2 border-brut shadow-brut-sm"
-          >
-            ASYNC<span className="text-acid">ART</span>
+        <div className="mx-auto flex max-w-6xl items-center justify-between py-3">
+          <a href="#home" className="font-display text-2xl font-extrabold tracking-tight">
+            Async<span className="text-link">Art</span>
           </a>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-3 font-mono uppercase text-sm tracking-tight">
-            {links.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="press px-4 py-2 border-brut bg-paper dark:bg-void dark:text-white shadow-brut-sm hover:bg-acid hover:text-ink"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Theme + Menu */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className="press p-2.5 border-brut bg-flame text-white shadow-brut-sm"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
+            <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
+              {links.map((link) => {
+                const isCurrent = active === link.id;
+                const isContact = link.id === "contact";
+                return (
+                  <a
+                    key={link.id}
+                    href={`#${link.id}`}
+                    aria-current={isCurrent ? "true" : undefined}
+                    className={
+                      isContact
+                        ? "rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-canvas transition-colors hover:bg-link"
+                        : `text-sm font-semibold underline decoration-2 underline-offset-8 transition-colors hover:decoration-fill ${
+                            isCurrent ? "decoration-fill" : "decoration-transparent"
+                          }`
+                    }
+                  >
+                    {link.label}
+                  </a>
+                );
+              })}
+            </nav>
+
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 
             <button
+              type="button"
               onClick={() => setIsOpen(true)}
               aria-label="Open menu"
-              className="press md:hidden p-2.5 border-brut bg-ink text-white dark:bg-white dark:text-ink shadow-brut-sm"
+              aria-expanded={isOpen}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-canvas md:hidden"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
         </div>
       </motion.header>
 
-      {/* MOBILE MENU */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-50 flex justify-center items-start pt-24 bg-ink/90 backdrop-blur-sm px-6"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className="glass-strong fixed inset-0 z-50 flex flex-col px-6 py-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
           >
-            <motion.div
-              className="relative bg-paper dark:bg-void text-ink dark:text-white border-brut shadow-brut p-8 w-full max-w-sm"
-              initial={{ y: -40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -40, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
+            <div className="flex items-center justify-between">
+              <span className="font-display text-2xl font-extrabold tracking-tight">
+                Async<span className="text-link">Art</span>
+              </span>
               <button
+                type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close menu"
-                className="press absolute top-4 right-4 p-2 border-brut bg-flame text-white shadow-brut-sm"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-canvas"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               </button>
+            </div>
 
-              <div className="flex flex-col gap-4 mt-8 font-mono uppercase text-lg">
-                {links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={handleLinkClick}
-                    className="press flex items-center gap-3 px-4 py-3 border-brut bg-transparent shadow-brut-sm hover:bg-acid hover:text-ink"
-                  >
-                    <link.icon className="w-5 h-5" />
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </motion.div>
+            <nav aria-label="Mobile" className="mt-14 flex flex-col">
+              {links.map((link, index) => (
+                <motion.a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  onClick={() => setIsOpen(false)}
+                  className="border-b border-line py-4 font-display text-5xl font-semibold tracking-tight"
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.08 + index * 0.07 }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,93 +1,97 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import AboutMoreModal from "../components/AboutMoreModal";
-import {
-  SiHtml5,
-  SiJavascript,
-  SiReact,
-  SiTailwindcss,
-  SiGit,
-  SiNodedotjs,
-  SiMongodb,
-  SiExpress,
-  SiTypescript,
-} from "react-icons/si";
+import portrait from "../assets/joel-about.jpg";
+import SectionHeading from "../components/SectionHeading";
+import ResumeButton from "../components/ResumeButton";
+import Reveal from "../components/Reveal";
 
-const skills = [
-  { name: "HTML", icon: SiHtml5, rotate: "-rotate-2" },
-  { name: "JavaScript", icon: SiJavascript, rotate: "rotate-1" },
-  { name: "React", icon: SiReact, rotate: "rotate-2" },
-  { name: "TypeScript", icon: SiTypescript, rotate: "-rotate-1" },
-  { name: "Tailwind", icon: SiTailwindcss, rotate: "rotate-2" },
-  { name: "Git", icon: SiGit, rotate: "-rotate-2" },
-  { name: "Node.js", icon: SiNodedotjs, rotate: "rotate-1" },
-  { name: "MongoDB", icon: SiMongodb, rotate: "-rotate-1" },
-  { name: "Express", icon: SiExpress, rotate: "rotate-2" },
+const facts = [
+  { label: "Based in", value: "Ibadan, Nigeria" },
+  { label: "Works across", value: "The MERN stack" },
+  { label: "Open to", value: "Full-time roles, client projects, collaborations" },
 ];
 
 export default function About() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
     <section
       id="about"
-      className="px-6 md:px-16 py-20 bg-paper dark:bg-void text-ink dark:text-white scroll-mt-10"
+      aria-labelledby="about-title"
+      className="scroll-mt-16 bg-panel px-6 py-20 md:px-12 md:py-28"
     >
-      <div className="container mx-auto flex flex-col md:flex-row gap-16 items-start">
-        {/* LEFT, Text */}
-        <motion.div
-          className="flex-1 space-y-6"
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl md:text-5xl font-display uppercase">
-            About Me
-          </h2>
+      <div className="mx-auto max-w-6xl">
+        <SectionHeading id="about-title" title="About" />
 
-          <p className="text-lg leading-relaxed max-w-xl text-ink/80 dark:text-white/80">
-            I am Joel, a Full Stack Developer dedicated to building seamless and high performance digital experiences. I utilize React, Node.js, Express, and MongoDB to create scalable applications that balance functionality with clean and refined design.
-          </p>
+        <div className="mt-14 grid gap-12 md:grid-cols-[18rem_1fr] md:gap-16">
+          <Reveal>
+            <div className="relative mx-auto aspect-[3/4] w-full max-w-xs overflow-hidden rounded-t-full border-2 border-ink bg-forest md:max-w-none">
+              <img
+                src={portrait}
+                alt="Portrait of Joel Ojo"
+                loading="lazy"
+                className="h-full w-full object-cover object-[50%_22%]"
+              />
+              <div className="glass-dark absolute bottom-4 left-4 right-4 rounded-2xl px-4 py-3 text-center">
+                <p className="font-display text-lg font-semibold leading-tight">Joel Ojo</p>
+                <p className="text-sm text-cream/80">Full-stack developer</p>
+              </div>
+            </div>
 
-          <blockquote className="border-l-[3px] border-flame pl-4 italic text-ink/70 dark:text-white/70 max-w-lg">
-            "I prioritize clarity, consistency, and visual balance in every project, ensuring reliability across both backend architecture and responsive user interfaces."
-          </blockquote>
-          
-          <p className="text-lg leading-relaxed max-w-xl text-ink/80 dark:text-white/80">
-            My projects involve solving complex technical challenges, including managing rate limits, implementing strict JWT authentication, and engineering real time collaborative environments.
-          </p>
+            <div className="mt-6 flex justify-center md:justify-start">
+              <ResumeButton variant="solid" className="w-full justify-center md:w-auto" />
+            </div>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="press mt-4 px-6 py-3.5 bg-cobalt text-white border-brut shadow-brut font-mono uppercase tracking-tight font-bold"
-          >
-            More About Me
-          </button>
-        </motion.div>
+            <dl className="mt-8 space-y-4">
+              {facts.map((fact) => (
+                <div key={fact.label} className="border-t border-line pt-3">
+                  <dt className="text-sm text-soft">{fact.label}</dt>
+                  <dd className="font-semibold">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
 
-        {/* RIGHT, Skills */}
-        <motion.div
-          className="flex-1 grid grid-cols-3 gap-5 w-full max-w-lg"
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          {skills.map(({ name, icon: Icon, rotate }) => (
-            <motion.div
-              key={name}
-              whileHover={{ rotate: 0, scale: 1.05 }}
-              className={`${rotate} flex flex-col items-center justify-center gap-2 p-4 border-brut bg-paper dark:bg-ink shadow-brut-sm transition-transform`}
-            >
-              <Icon className="w-7 h-7 text-cobalt" />
-              <p className="text-xs font-mono uppercase tracking-tight">{name}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+          <div className="max-w-[62ch] space-y-6 text-lg leading-relaxed">
+            <Reveal delay={0.05}>
+              <p className="font-display text-3xl font-medium leading-snug tracking-tight md:text-4xl">
+                I build the whole product, from the screen someone taps to the server that answers
+                it.
+              </p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p>
+                A lot of my work starts with a problem close to home: checking whether a medicine is
+                genuine, giving a team one shared place for its documents, or debugging a page
+                together with someone who is far away.
+              </p>
+            </Reveal>
+            <Reveal delay={0.15}>
+              <p>
+                I care about the parts users never see. Rate limits, strict JWT authentication,
+                signed webhooks, and a codebase split into small files that are easy to change next
+                month.
+              </p>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <p>
+                Right now I am preparing Kherphi for launch, a browser extension that turns any web
+                page into a design canvas, and building a mobile football career simulator in Unity.
+                I am also learning Python and cybersecurity, so the next thing I ship is secure by
+                default.
+              </p>
+            </Reveal>
+            <Reveal delay={0.25}>
+              <p>
+                Have a role or a project in mind?{" "}
+                <a
+                  href="#contact"
+                  className="font-semibold underline decoration-fill decoration-2 underline-offset-4 hover:text-link"
+                >
+                  Send me a message
+                </a>
+                .
+              </p>
+            </Reveal>
+          </div>
+        </div>
       </div>
-
-      <AboutMoreModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 }
